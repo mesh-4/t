@@ -1,4 +1,5 @@
 import { create } from "zustand"
+import { format } from "date-fns"
 
 export type BoxEvent = {
   start: string
@@ -38,6 +39,9 @@ type Store = {
   pointer: PointerSet
   setPointer: (pointer: Partial<PointerSet>) => void
   resetPointer: () => void
+
+  date: string
+  setDate: (date: string) => void
 }
 
 export const useStore = create<Store>((set) => ({
@@ -53,4 +57,6 @@ export const useStore = create<Store>((set) => ({
   pointer: DEFAULT_POINTER,
   setPointer: (pointer) => set((state) => ({ pointer: { ...state.pointer, ...pointer } })),
   resetPointer: () => set({ pointer: DEFAULT_POINTER }),
+  date: format(new Date(), "yyyy/MM/dd"),
+  setDate: (date: string) => set({ date }),
 }))
