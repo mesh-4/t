@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Box, Flex, Text, SystemStyleObject } from "@chakra-ui/react"
+import { Box, Flex, Text } from "@chakra-ui/react"
 
 import { useStore, BoxEvent } from "@/store"
 
@@ -7,16 +7,8 @@ import BoxerBody from "./body"
 
 function EventPlaceholder() {
   const isDragging = useStore((state) => state.isDragging)
-  const pointer = useStore((state) => state.pointer)
-
-  const sx: SystemStyleObject =
-    pointer.end.y > pointer.start.y
-      ? {
-          top: `${pointer.start.y}px`,
-        }
-      : {
-          top: `${pointer.end.y}px`,
-        }
+  const endY = useStore((state) => state.pointer.end.y)
+  const startY = useStore((state) => state.pointer.start.y)
 
   if (!isDragging) {
     return null
@@ -25,12 +17,14 @@ function EventPlaceholder() {
   return (
     <Box
       pos="absolute"
+      left="60px"
+      top={`${Math.min(startY, endY)}px`}
       transformOrigin="bottom"
       borderRadius="md"
       width="20%"
+      height={`${Math.abs(endY - startY)}px`}
       bg="blue.400"
-      height={`${Math.abs(pointer.end.y - pointer.start.y)}px`}
-      sx={{ ...sx, left: "60px", overflow: "hidden" }}>
+      overflow="hidden">
       <Text px={1}>test</Text>
     </Box>
   )
@@ -75,30 +69,26 @@ function Boxer() {
   const isDragging = useStore((state) => state.isDragging)
   const setPointer = useStore((state) => state.setPointer)
 
-  const onMouseMove = React.useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      e.stopPropagation()
-      if (!isDragging) return
-      setPointer({
-        end: {
-          y: e.clientY,
-          id: "",
-        },
-      })
-    },
-    [isDragging]
-  )
+  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging) {
+      return
+    }
+    setPointer({
+      end: {
+        y: e.clientY + e.currentTarget.scrollTop - e.currentTarget.offsetTop,
+        id: "",
+      },
+    })
+  }
 
   return (
-    <Box>
-      <Flex w="100%" h="100%" flexDir="column" pos="relative" onMouseMove={onMouseMove}>
-        <EventPlaceholder />
-        {events.map((event, idx) => (
-          <EventBox key={`event-${idx}`} data={event} />
-        ))}
-        <BoxerBody date="2023-02-20" />
-      </Flex>
-    </Box>
+    <Flex w="100%" h="100%" pt={2} flexDir="column" pos="relative" onMouseMove={onMouseMove} overflowY="scroll">
+      <EventPlaceholder />
+      {events.map((event, idx) => (
+        <EventBox key={`event-${idx}`} data={event} />
+      ))}
+      <BoxerBody date="2023/02/20" />
+    </Flex>
   )
 }
 

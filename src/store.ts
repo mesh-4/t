@@ -10,6 +10,19 @@ type Pointer = {
   id: string
 }
 
+type PointerSet = Record<"start" | "end", Pointer>
+
+const DEFAULT_POINTER = {
+  start: {
+    id: "",
+    y: 0,
+  },
+  end: {
+    id: "",
+    y: 0,
+  },
+} as PointerSet
+
 type Store = {
   unit: number
   isDragging: boolean
@@ -22,16 +35,9 @@ type Store = {
   events: BoxEvent[]
   addEvent: (event: BoxEvent) => void
 
-  pointer: {
-    start: Pointer
-    end: Pointer
-  }
-  setPointer: (
-    pointer: Partial<{
-      start: Pointer
-      end: Pointer
-    }>
-  ) => void
+  pointer: PointerSet
+  setPointer: (pointer: Partial<PointerSet>) => void
+  resetPointer: () => void
 }
 
 export const useStore = create<Store>((set) => ({
@@ -43,16 +49,8 @@ export const useStore = create<Store>((set) => ({
   isDragging: false,
   setDragging: (isDragging: boolean) => set({ isDragging }),
   events: [],
-  addEvent: (event: BoxEvent) => set((state) => ({ events: [...state.events, event] })),
-  pointer: {
-    start: {
-      id: "",
-      y: 0,
-    },
-    end: {
-      id: "",
-      y: 0,
-    },
-  },
+  addEvent: (event) => set((state) => ({ events: [...state.events, event] })),
+  pointer: DEFAULT_POINTER,
   setPointer: (pointer) => set((state) => ({ pointer: { ...state.pointer, ...pointer } })),
+  resetPointer: () => set({ pointer: DEFAULT_POINTER }),
 }))

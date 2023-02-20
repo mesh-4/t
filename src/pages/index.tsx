@@ -13,7 +13,7 @@ export default function Home() {
       pos="relative"
       maxW={{ base: "375px", sm: "680px", md: "900px", lg: "1200px" }}>
       <Flex as="main" h="100%">
-        <Box flex="2">
+        <Box flex="2" height="500px">
           <Boxer />
         </Box>
         <Box flex="1"></Box>
