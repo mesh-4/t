@@ -24,7 +24,7 @@ function Hour({ date, hour }: HourProps) {
           {displayTime(hour)}:00
         </Text>
       </Box>
-      <Box width="100%" flex="auto" cursor="pointer">
+      <Box width="100%" flex="auto">
         {Array.from({ length: 60 / unit }, (_, i) => (
           <BoxerSlot key={i} idx={i} date={date} hour={hour} />
         ))}

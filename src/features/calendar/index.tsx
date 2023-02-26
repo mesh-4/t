@@ -10,15 +10,17 @@ function CalendarWeek() {
   const weekDays = eachDayOfInterval({ start: weekStart, end: endOfWeek(weekStart) })
 
   return (
-    <Flex w="full" alignItems="center" aria-hidden="true" mb={2}>
-      {weekDays.map((day) => (
-        <Box key={day.toString()} flex="1" textAlign="center">
-          <Text fontSize="sm" fontWeight={700}>
-            {format(day, "EEE")}
-          </Text>
-        </Box>
-      ))}
-    </Flex>
+    <Box as="thead">
+      <Flex as="tr" w="full" alignItems="center" aria-hidden="true" mb={2}>
+        {weekDays.map((day) => (
+          <Box key={day.toString()} as="th" flex="1" textAlign="center">
+            <Text fontSize="sm" fontWeight={700}>
+              {format(day, "EEE")}
+            </Text>
+          </Box>
+        ))}
+      </Flex>
+    </Box>
   )
 }
 
@@ -26,8 +28,10 @@ function Calendar() {
   return (
     <Flex flexDir="column">
       <CalendarHeader />
-      <CalendarWeek />
-      <CalendarMonth />
+      <Box as="table" role="grid">
+        <CalendarWeek />
+        <CalendarMonth />
+      </Box>
     </Flex>
   )
 }

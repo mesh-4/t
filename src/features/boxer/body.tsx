@@ -1,12 +1,12 @@
 import * as React from "react"
 
+import { useStore } from "@/store"
+
 import BoxerHour from "./hour"
 
-type BoxerBodyProps = {
-  date: string
-}
+function BoxerBody() {
+  const date = useStore((state) => state.date)
 
-function BoxerBody({ date }: BoxerBodyProps) {
   return (
     <>
       {Array.from({ length: 24 }, (_, i) => (
