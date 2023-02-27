@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Box, Flex } from "@chakra-ui/react"
+import { Box } from "@chakra-ui/react"
 
 import { useStore } from "@/store"
 
@@ -9,13 +9,11 @@ function EventsDay() {
   const eventsInSameDate = useStore((state) => state.eventsInSameDate())
 
   return (
-    <Flex w="100%" h="100%" pos="absolute" top={0} left="60px" cursor="pointer">
-      <Box w="calc(100% - 60px)" pos="relative">
-        {eventsInSameDate.map((event, idx) => (
-          <EventBox key={event.id} idx={idx} data={event} />
-        ))}
-      </Box>
-    </Flex>
+    <Box pos="absolute" top={2} left="60px" right={0}>
+      {eventsInSameDate.map((event, idx) => (
+        <EventBox key={event.id} idx={idx} data={event} />
+      ))}
+    </Box>
   )
 }
 

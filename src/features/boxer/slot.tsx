@@ -1,8 +1,8 @@
 import * as React from "react"
+import padStart from "lodash/padStart"
 import { Box } from "@chakra-ui/react"
 
-import { useStore } from "@/store"
-import { padNumWithZero } from "@/utils"
+import { SLOT_UNIT } from "@/constants"
 
 type SlotProps = {
   idx: number
@@ -11,19 +11,13 @@ type SlotProps = {
 }
 
 function BoxerSlot({ idx, date, hour }: SlotProps) {
-  const unit = useStore((state) => state.unit)
-  const minute = idx * unit
+  const minute = idx * SLOT_UNIT
 
-  return (
-    <Box
-      flex="none"
-      w="100%"
-      h="15px"
-      id={`${date}-${padNumWithZero(hour)}:${padNumWithZero(minute)}`}
-      borderTop={minute === 0 ? "2px" : "1px"}
-      borderColor="gray.700"
-    />
-  )
+  const slotId = React.useMemo(() => {
+    return `${date}-${padStart(hour.toString(), 2, "0")}:${padStart(minute.toString(), 2, "0")}`
+  }, [date, hour, minute])
+
+  return <Box w="100%" h="20px" id={slotId} borderTop={minute === 0 ? "2px" : "1px"} borderColor="gray.700" />
 }
 
 BoxerSlot.displayName = "BoxerSlot"

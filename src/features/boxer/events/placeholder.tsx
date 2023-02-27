@@ -19,12 +19,13 @@ function EventPlaceholder() {
       pos="absolute"
       left="60px"
       top={`${Math.min(startY, endY)}px`}
-      transformOrigin="bottom"
-      borderRadius="md"
-      width="20%"
+      width="calc(100% - 60px)"
       height={`${Math.abs(endY - startY)}px`}
-      bg="rgba(72, 187, 120, 0.5)"
-      overflow="hidden">
+      rounded="md"
+      background="rgba(72, 187, 120, 0.5)"
+      zIndex="9999"
+      overflow="hidden"
+      pointerEvents="none">
       <Text px={1} fontSize="sm">
         {getClosetSlotByY(Math.min(startY, endY))} ~ {getClosetSlotByY(Math.max(startY, endY))}
       </Text>

@@ -21,11 +21,13 @@ const DEFAULT_POINTER = {
 type Layer = {
   isCreating: boolean
   isUpdating: string
+  isDragging: boolean
 }
 
 const DEFAULT_LAYER = {
   isCreating: false,
   isUpdating: "",
+  isDragging: false,
 } as Layer
 
 const DEFAULT_DATE = format(new Date(), "yyyy/MM/dd")

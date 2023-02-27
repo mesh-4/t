@@ -6,6 +6,8 @@ import { useStore } from "@/store"
 import { TIMELINE_ID } from "@/constants"
 import { useCallbackRef } from "@/hooks/use-callback-ref"
 import { prefixWith, getClosetSlotByY } from "@/utils"
+import EventDay from "./day"
+import EventsCreateLayer from "./create-layer"
 
 type EventLayerProps = {
   children?: React.ReactNode
@@ -19,83 +21,86 @@ function EventsLayer({ children }: EventLayerProps) {
   const updateEvent = useStore((state) => state.updateEvent)
 
   const date = useStore((state) => state.date)
-  const startY = useStore((state) => state.pointer.start)
   const getPointer = useStore((state) => state.getPointer)
   const setPointer = useStore((state) => state.setPointer)
   const resetPointer = useStore((state) => state.resetPointer)
 
-  const targetRef = React.useRef<HTMLDivElement>(null)
   const timelineRef = React.useRef<HTMLDivElement>(null)
 
-  const getTimeline = React.useCallback(() => {
-    const height = timelineRef.current?.scrollHeight ?? 0
-    const offset = timelineRef.current?.offsetTop ?? 0
-    const scroll = timelineRef.current?.scrollTop ?? 0
+  const isInteracting = isCreating || isUpdating !== ""
+
+  const getTimeline = useCallbackRef(() => {
+    const offsetTop = timelineRef.current?.offsetTop ?? 0
+    const scrollHeight = timelineRef.current?.scrollHeight ?? 0
+    const currentScroll = timelineRef.current?.scrollTop ?? 0
 
     return {
-      offset,
-      scroll,
-      height,
-      topEdge: offset,
-      bottomEdge: offset + height,
+      currentScroll,
+      topEdge: offsetTop,
+      bottomEdge: offsetTop + scrollHeight,
     }
-  }, [])
-
-  const isInteracting = isCreating || isUpdating !== ""
+  })
 
   const handleReset = useCallbackRef(() => {
     resetPointer()
     setLayer({
       isCreating: false,
       isUpdating: "",
+      isDragging: false,
     })
   })
 
-  const handleAction = (clientY: number) => {
-    const { topEdge, scroll } = getTimeline()
-    const cursorY = clientY + scroll
-    const endY = cursorY - topEdge
+  const handleAction = React.useCallback(
+    (clientY: number) => {
+      const { topEdge, currentScroll } = getTimeline()
+      const endY = clientY + currentScroll - topEdge
 
-    if (isUpdating === "") {
-      createEvent({
-        id: nanoid(),
-        start: prefixWith(date)(getClosetSlotByY(getPointer("start"))),
-        end: prefixWith(date)(getClosetSlotByY(endY)),
-      })
-    } else {
-      updateEvent(isUpdating, {
-        end: prefixWith(date)(getClosetSlotByY(endY)),
-      })
-    }
-  }
+      if (isUpdating === "") {
+        const startY = getPointer("start")
+        createEvent({
+          id: nanoid(),
+          start: prefixWith(date)(getClosetSlotByY(Math.min(startY, endY))),
+          end: prefixWith(date)(getClosetSlotByY(Math.max(startY, endY))),
+        })
+      } else {
+        updateEvent(isUpdating, {
+          end: prefixWith(date)(getClosetSlotByY(getPointer("end"))),
+        })
+      }
+    },
+    [date, isUpdating]
+  )
 
-  const handleMove = (clientY: number) => {
-    const { scroll, topEdge, bottomEdge } = getTimeline()
-    const cursorY = clientY + scroll
-    const previewY = cursorY - topEdge
+  const handleMove = React.useCallback(
+    (clientY: number) => {
+      const { topEdge, bottomEdge, currentScroll } = getTimeline()
+      const cursorY = clientY + currentScroll
+      const previewY = cursorY - topEdge
 
-    if (cursorY < topEdge || cursorY > bottomEdge) {
-      handleReset()
-      return
-    }
+      if (cursorY < topEdge || cursorY > bottomEdge) {
+        handleReset()
+        return
+      }
 
-    if (isUpdating === "") {
-      setPointer({
-        end: previewY,
-      })
-      return
-    } else {
-      if (cursorY > getPointer("start") + 15) {
+      if (isUpdating === "") {
         setPointer({
           end: previewY,
         })
+        return
+      } else {
+        if (previewY > getPointer("start") + 20) {
+          setPointer({
+            end: previewY,
+          })
+        }
       }
-    }
-  }
+    },
+    [isUpdating]
+  )
 
   React.useEffect(() => {
     const handleMouseUp = (e: MouseEvent) => {
-      if (e.target instanceof HTMLElement && !targetRef.current?.contains(e.target) && isInteracting) {
+      if (e.target instanceof HTMLElement && !timelineRef.current?.contains(e.target) && isInteracting) {
         handleAction(e.clientY)
         handleReset()
       }
@@ -105,65 +110,55 @@ function EventsLayer({ children }: EventLayerProps) {
     return () => {
       document.removeEventListener("mouseup", handleMouseUp)
     }
-  }, [isCreating])
+  }, [isInteracting, handleAction])
 
   React.useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      if (e.target instanceof HTMLElement && !targetRef.current?.contains(e.target) && isInteracting) {
+      if (e.target instanceof HTMLElement && !timelineRef.current?.contains(e.target) && isInteracting) {
         handleMove(e.clientY)
       }
     }
-
     document.addEventListener("mousemove", handleMouseMove)
     return () => {
       document.removeEventListener("mousemove", handleMouseMove)
     }
-  }, [isCreating])
+  }, [isInteracting])
 
-  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault()
-    if (!isInteracting) return
-    handleMove(e.clientY)
-  }
+  const onMouseUp = React.useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault()
+      if (e.type !== "mouseup") return
+      if (!isInteracting) return
+      handleAction(e.clientY)
+      handleReset()
+    },
+    [isInteracting]
+  )
 
-  const onMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault()
-    if (e.type !== "mouseup") return
-    handleAction(e.clientY)
-    handleReset()
-  }
-
-  const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault()
-    if (e.type !== "mousedown") return
-    const { topEdge, scroll } = getTimeline()
-    const cursorY = e.clientY + scroll
-    const startPoint = cursorY - topEdge
-    setPointer({
-      start: startPoint,
-      end: startPoint,
-    })
-    setLayer({
-      isCreating: true,
-    })
-  }
-
-  const onMouseLeave = () => {}
+  const onMouseMove = React.useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault()
+      if (!isInteracting) return
+      handleMove(e.clientY)
+    },
+    [isInteracting]
+  )
 
   return (
     <Box
-      w="100%"
-      h="100%"
-      pt={2}
       id={TIMELINE_ID}
       ref={timelineRef}
-      flexDir="column"
+      w="100%"
+      h="100%"
       pos="relative"
       overflowY="scroll"
-      onMouseUp={onMouseUp}
-      onMouseDown={onMouseDown}
-      onMouseMove={onMouseMove}>
-      {children}
+      onMouseMove={onMouseMove}
+      onMouseUp={onMouseUp}>
+      <Box pos="relative" pt={2}>
+        {children}
+        <EventDay />
+        <EventsCreateLayer getTimeline={getTimeline} />
+      </Box>
     </Box>
   )
 }

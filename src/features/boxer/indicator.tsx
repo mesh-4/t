@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Box, Flex } from "@chakra-ui/react"
 
-import { getYByTime } from "@/features/boxer/metrics"
+import { getYByTime } from "@/utils"
 
 function CurrentTimeIndicator() {
   const rAF = React.useRef<number>(0)

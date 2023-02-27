@@ -3,7 +3,7 @@ import { format } from "date-fns"
 import { Box, Flex, Text } from "@chakra-ui/react"
 
 import { useStore, BoxEvent } from "@/store"
-import { getSlotY } from "@/utils"
+import { getDateToY } from "@/utils"
 
 type EventBoxProps = {
   idx: number
@@ -18,20 +18,18 @@ function EventBox({ idx, data }: EventBoxProps) {
   const setLayer = useStore((state) => state.setLayer)
   const setPointer = useStore((state) => state.setPointer)
 
-  const [startPoint, setStartPoint] = React.useState(getSlotY(data.start))
-  const [endPoint, setEndPoint] = React.useState(getSlotY(data.end))
+  const [startPoint, setStartPoint] = React.useState(getDateToY(data.start))
+  const [endPoint, setEndPoint] = React.useState(getDateToY(data.end))
 
-  const size = React.useMemo(() => {
+  const left = React.useMemo(() => {
     const events = eventsInSameHour(data.start)
-    const width = 100 / events.length
-    const left = (100 / events.length) * events.indexOf(data)
-    return { width, left }
-  }, [data.start, idx])
+    return (100 / events.length) * events.indexOf(data)
+  }, [data, idx])
 
   React.useEffect(() => {
-    setStartPoint(getSlotY(data.start))
-    setEndPoint(getSlotY(data.end))
-  }, [data.start, data.end])
+    setStartPoint(getDateToY(data.start))
+    setEndPoint(getDateToY(data.end))
+  }, [data])
 
   React.useEffect(() => {
     if (isUpdating === data.id) {
@@ -39,44 +37,42 @@ function EventBox({ idx, data }: EventBoxProps) {
     }
   }, [endY, isUpdating])
 
-  const onMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    if (e.type !== "mousedown") return
+  const onMouseDown = React.useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault()
+      e.stopPropagation()
+      if (e.type !== "mousedown") return
 
-    setLayer({
-      isUpdating: data.id,
-    })
-    setPointer({
-      start: document.getElementById(data.start)?.offsetTop ?? 0,
-      end: document.getElementById(data.end)?.offsetTop ?? 0,
-    })
-  }
-
-  const onClick = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    console.log("clicked")
-  }
+      const startSlotY = getDateToY(data.start)
+      const endSlotY = getDateToY(data.end)
+      setLayer({
+        isUpdating: data.id,
+      })
+      setPointer({
+        start: startSlotY,
+        end: endSlotY,
+      })
+      setStartPoint(startSlotY)
+      setEndPoint(endSlotY)
+    },
+    [data]
+  )
 
   return (
     <Box
-      pos="absolute"
-      transformOrigin="bottom"
-      borderRadius="md"
-      width={`${size.width}%`}
-      bg="rgba(49, 130, 206, 0.5)"
-      top={`${startPoint}px`}
-      left={`${size.left}%`}
       overflow="hidden"
-      zIndex={idx + 1}
-      height={`${Math.abs(endPoint - startPoint)}px`}>
+      rounded="md"
+      bg="rgba(49, 130, 206, 0.5)"
+      pos="absolute"
+      inset={`${startPoint}px 0% -${endPoint}px ${left}%`}
+      zIndex={idx + 1}>
       <Flex pos="relative" px={1} height="100%" flexDir="column">
-        <Box flex="auto" w="100%" h="100%" onClick={onClick}>
-          <Text fontSize="sm">
-            {format(new Date(data.start), "p")} ~ {format(new Date(data.end), "p")}
+        <Box flex="auto" w="100%" h="100%">
+          <Text fontSize="sm" lineHeight="20px">
+            {format(new Date(data.start), "HH:mm")} ~ {format(new Date(data.end), "HH:mm")}
           </Text>
         </Box>
-        <Box flex="none" w="100%" h="16px" cursor="grab" onMouseDown={onMouseDown} />
+        <Box pos="absolute" bottom={0} w="100%" h="8px" cursor="row-resize" onMouseDown={onMouseDown} />
       </Flex>
     </Box>
   )

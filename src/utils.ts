@@ -1,3 +1,5 @@
+import { startOfDay } from "date-fns"
+
 export const prefixWith = (prefix: string) => (id: string | number) => `${prefix}-${id}`
 
 export const padNumWithZero = (val: number) => (val < 10 ? `0${val}` : val)
@@ -7,7 +9,9 @@ export const getSlotY = (id: string) => {
   return slot?.offsetTop ?? 0
 }
 
-const totalHeight = 15 * 4 * 24
+const slotHeight = 20
+
+const totalHeight = slotHeight * 4 * 24
 
 const allSlots = Array.from({ length: 24 * 4 }, (_, i) => {
   const hour = Math.floor(i / 4)
@@ -32,7 +36,7 @@ export function getClosetSlotByY(targetY: number) {
   const distance = Math.abs(targetY - 8)
 
   // Calculate the number of 15-minute units from topY to the targetY
-  const numUnits = distance / 15
+  const numUnits = distance / 20
 
   // Calculate the number of minutes represented by the units
   const totalMinutes = numUnits * 15
@@ -45,4 +49,14 @@ export function getClosetSlotByY(targetY: number) {
   const closestLabel = allSlots[closestIndex]
 
   return closestLabel
+}
+
+export function getDateToY(date: string) {
+  const target = new Date(date)
+  const dayStart = startOfDay(new Date(date))
+
+  const distance = target.getTime() - dayStart.getTime()
+  const minutes = Math.floor(distance / 1000 / 60)
+
+  return (minutes * 20) / 15
 }

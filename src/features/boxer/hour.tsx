@@ -1,8 +1,8 @@
 import * as React from "react"
+import padStart from "lodash/padStart"
 import { Box, Flex, Text } from "@chakra-ui/react"
 
 import { useStore } from "@/store"
-import { padNumWithZero } from "@/utils"
 
 import BoxerSlot from "./slot"
 
@@ -18,7 +18,7 @@ function BoxerHour({ date, hour }: BoxerHourProps) {
     <Flex flex="none" w="100%" userSelect="none">
       <Box w="60px" pos="relative" flex="none">
         <Text fontSize="sm" lineHeight="none" transform="translateY(-50%)">
-          {padNumWithZero(hour)}:00
+          {padStart(hour.toString(), 2, "0")}:00
         </Text>
       </Box>
       <Box width="100%" flex="auto">
