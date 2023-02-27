@@ -16,4 +16,6 @@ function BoxerBody() {
   )
 }
 
+BoxerBody.displayName = "BoxerBody"
+
 export default React.memo(BoxerBody)

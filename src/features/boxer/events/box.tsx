@@ -11,12 +11,12 @@ type EventBoxProps = {
 }
 
 function EventBox({ idx, data }: EventBoxProps) {
-  const endY = useStore((state) => state.pointer.end.y)
-  const editEvent = useStore((state) => state.editEvent)
-  const setEditEvent = useStore((state) => state.setEditEvent)
-  const setPointer = useStore((state) => state.setPointer)
-  const setDragging = useStore((state) => state.setDragging)
+  const endY = useStore((state) => state.pointer.end)
+  const isUpdating = useStore((state) => state.layer.isUpdating)
   const eventsInSameHour = useStore((state) => state.eventsInSameHour)
+
+  const setLayer = useStore((state) => state.setLayer)
+  const setPointer = useStore((state) => state.setPointer)
 
   const [startPoint, setStartPoint] = React.useState(getSlotY(data.start))
   const [endPoint, setEndPoint] = React.useState(getSlotY(data.end))
@@ -25,7 +25,6 @@ function EventBox({ idx, data }: EventBoxProps) {
     const events = eventsInSameHour(data.start)
     const width = 100 / events.length
     const left = (100 / events.length) * events.indexOf(data)
-    console.log({ width, left })
     return { width, left }
   }, [data.start, idx])
 
@@ -35,28 +34,23 @@ function EventBox({ idx, data }: EventBoxProps) {
   }, [data.start, data.end])
 
   React.useEffect(() => {
-    if (editEvent === data.id) {
+    if (isUpdating === data.id) {
       setEndPoint(endY)
     }
-  }, [endY, editEvent])
+  }, [endY, isUpdating])
 
   const onMouseDown = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
     if (e.type !== "mousedown") return
 
-    setEditEvent(data.id)
-    setPointer({
-      start: {
-        y: document.getElementById(data.start)?.offsetTop ?? 0,
-        id: data.start,
-      },
-      end: {
-        y: document.getElementById(data.end)?.offsetTop ?? 0,
-        id: data.end,
-      },
+    setLayer({
+      isUpdating: data.id,
     })
-    setDragging(true)
+    setPointer({
+      start: document.getElementById(data.start)?.offsetTop ?? 0,
+      end: document.getElementById(data.end)?.offsetTop ?? 0,
+    })
   }
 
   const onClick = (e: React.MouseEvent) => {

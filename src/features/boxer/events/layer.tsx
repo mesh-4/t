@@ -1,32 +1,33 @@
 import * as React from "react"
+import { nanoid } from "nanoid"
 import { Box } from "@chakra-ui/react"
 
 import { useStore } from "@/store"
 import { TIMELINE_ID } from "@/constants"
 import { useCallbackRef } from "@/hooks/use-callback-ref"
+import { prefixWith, getClosetSlotByY } from "@/utils"
 
 type EventLayerProps = {
   children?: React.ReactNode
 }
 
 function EventsLayer({ children }: EventLayerProps) {
-  const editEvent = useStore((state) => state.editEvent)
-  const setEditEvent = useStore((state) => state.setEditEvent)
+  const isCreating = useStore((state) => state.layer.isCreating)
+  const isUpdating = useStore((state) => state.layer.isUpdating)
+  const setLayer = useStore((state) => state.setLayer)
   const createEvent = useStore((state) => state.createEvent)
-  const updateEvent = useStore((state) => state.updateEventViaPointer)
+  const updateEvent = useStore((state) => state.updateEvent)
 
-  const startY = useStore((state) => state.pointer.start.y)
+  const date = useStore((state) => state.date)
+  const startY = useStore((state) => state.pointer.start)
+  const getPointer = useStore((state) => state.getPointer)
   const setPointer = useStore((state) => state.setPointer)
   const resetPointer = useStore((state) => state.resetPointer)
-  const updatePointer = useStore((state) => state.updatePointer)
-
-  const isDragging = useStore((state) => state.isDragging)
-  const setDragging = useStore((state) => state.setDragging)
 
   const targetRef = React.useRef<HTMLDivElement>(null)
   const timelineRef = React.useRef<HTMLDivElement>(null)
 
-  const getTimelineTop = React.useCallback(() => {
+  const getTimeline = React.useCallback(() => {
     const height = timelineRef.current?.scrollHeight ?? 0
     const offset = timelineRef.current?.offsetTop ?? 0
     const scroll = timelineRef.current?.scrollTop ?? 0
@@ -40,48 +41,53 @@ function EventsLayer({ children }: EventLayerProps) {
     }
   }, [])
 
+  const isInteracting = isCreating || isUpdating !== ""
+
   const handleReset = useCallbackRef(() => {
     resetPointer()
-    setEditEvent("")
-    setDragging(false)
+    setLayer({
+      isCreating: false,
+      isUpdating: "",
+    })
   })
 
   const handleAction = (clientY: number) => {
-    const { offset, scroll } = getTimelineTop()
+    const { topEdge, scroll } = getTimeline()
     const cursorY = clientY + scroll
-    const endPoint = cursorY - offset
+    const endY = cursorY - topEdge
 
-    if (editEvent === "") {
-      createEvent(endPoint)
+    if (isUpdating === "") {
+      createEvent({
+        id: nanoid(),
+        start: prefixWith(date)(getClosetSlotByY(getPointer("start"))),
+        end: prefixWith(date)(getClosetSlotByY(endY)),
+      })
     } else {
-      updateEvent(editEvent)
+      updateEvent(isUpdating, {
+        end: prefixWith(date)(getClosetSlotByY(endY)),
+      })
     }
   }
 
   const handleMove = (clientY: number) => {
-    const { offset, scroll, topEdge, bottomEdge } = getTimelineTop()
+    const { scroll, topEdge, bottomEdge } = getTimeline()
     const cursorY = clientY + scroll
-    const previewY = cursorY - offset
+    const previewY = cursorY - topEdge
 
     if (cursorY < topEdge || cursorY > bottomEdge) {
       handleReset()
       return
     }
 
-    if (editEvent === "") {
+    if (isUpdating === "") {
       setPointer({
-        end: {
-          y: previewY,
-          id: "",
-        },
+        end: previewY,
       })
       return
     } else {
-      if (cursorY > startY + 15) {
-        updatePointer({
-          end: {
-            y: previewY,
-          },
+      if (cursorY > getPointer("start") + 15) {
+        setPointer({
+          end: previewY,
         })
       }
     }
@@ -89,7 +95,7 @@ function EventsLayer({ children }: EventLayerProps) {
 
   React.useEffect(() => {
     const handleMouseUp = (e: MouseEvent) => {
-      if (e.target instanceof HTMLElement && !targetRef.current?.contains(e.target) && isDragging) {
+      if (e.target instanceof HTMLElement && !targetRef.current?.contains(e.target) && isInteracting) {
         handleAction(e.clientY)
         handleReset()
       }
@@ -99,11 +105,11 @@ function EventsLayer({ children }: EventLayerProps) {
     return () => {
       document.removeEventListener("mouseup", handleMouseUp)
     }
-  }, [isDragging])
+  }, [isCreating])
 
   React.useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      if (e.target instanceof HTMLElement && !targetRef.current?.contains(e.target) && isDragging) {
+      if (e.target instanceof HTMLElement && !targetRef.current?.contains(e.target) && isInteracting) {
         handleMove(e.clientY)
       }
     }
@@ -112,11 +118,11 @@ function EventsLayer({ children }: EventLayerProps) {
     return () => {
       document.removeEventListener("mousemove", handleMouseMove)
     }
-  }, [isDragging])
+  }, [isCreating])
 
   const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault()
-    if (!isDragging) return
+    if (!isInteracting) return
     handleMove(e.clientY)
   }
 
@@ -130,18 +136,16 @@ function EventsLayer({ children }: EventLayerProps) {
   const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault()
     if (e.type !== "mousedown") return
-    const { offset, scroll } = getTimelineTop()
+    const { topEdge, scroll } = getTimeline()
     const cursorY = e.clientY + scroll
-    const startPoint = cursorY - offset
-    updatePointer({
-      start: {
-        y: startPoint,
-      },
-      end: {
-        y: startPoint,
-      },
+    const startPoint = cursorY - topEdge
+    setPointer({
+      start: startPoint,
+      end: startPoint,
     })
-    setDragging(true)
+    setLayer({
+      isCreating: true,
+    })
   }
 
   const onMouseLeave = () => {}

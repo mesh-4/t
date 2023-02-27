@@ -2,26 +2,23 @@ import * as React from "react"
 import { Box, Flex, Text } from "@chakra-ui/react"
 
 import { useStore } from "@/store"
+import { padNumWithZero } from "@/utils"
 
 import BoxerSlot from "./slot"
 
-const displayTime = (time: number) => {
-  return time < 10 ? `0${time}` : time
-}
-
-type HourProps = {
+type BoxerHourProps = {
   date: string
   hour: number
 }
 
-function Hour({ date, hour }: HourProps) {
+function BoxerHour({ date, hour }: BoxerHourProps) {
   const unit = useStore((state) => state.unit)
 
   return (
     <Flex flex="none" w="100%" userSelect="none">
       <Box w="60px" pos="relative" flex="none">
         <Text fontSize="sm" lineHeight="none" transform="translateY(-50%)">
-          {displayTime(hour)}:00
+          {padNumWithZero(hour)}:00
         </Text>
       </Box>
       <Box width="100%" flex="auto">
@@ -33,4 +30,6 @@ function Hour({ date, hour }: HourProps) {
   )
 }
 
-export default React.memo(Hour)
+BoxerHour.displayName = "BoxerHour"
+
+export default React.memo(BoxerHour)

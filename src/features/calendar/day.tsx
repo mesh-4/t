@@ -11,11 +11,10 @@ type CalendarDayProps = {
 function CalendarDay({ date }: CalendarDayProps) {
   const currentDate = useStore((state) => state.date)
   const setDate = useStore((state) => state.setDate)
-  const selectedDate = useStore((state) => state.date)
 
   const dateString = format(date, "yyyy-MM-dd")
 
-  const isSelected = isSameDay(new Date(selectedDate), new Date(dateString))
+  const isSelected = isSameDay(new Date(currentDate), new Date(dateString))
 
   const onDateChange = () => {
     setDate(dateString)

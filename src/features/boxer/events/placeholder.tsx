@@ -2,14 +2,15 @@ import * as React from "react"
 import { Box, Text } from "@chakra-ui/react"
 
 import { useStore } from "@/store"
+import { getClosetSlotByY } from "@/utils"
 
 function EventPlaceholder() {
-  const isDragging = useStore((state) => state.isDragging)
-  const editEvent = useStore((state) => state.editEvent)
-  const endY = useStore((state) => state.pointer.end.y)
-  const startY = useStore((state) => state.pointer.start.y)
+  const endY = useStore((state) => state.pointer.end)
+  const startY = useStore((state) => state.pointer.start)
+  const isCreating = useStore((state) => state.layer.isCreating)
+  const isUpdating = useStore((state) => state.layer.isUpdating)
 
-  if (!isDragging && editEvent !== "") {
+  if (!isCreating && isUpdating !== "") {
     return null
   }
 
@@ -22,9 +23,11 @@ function EventPlaceholder() {
       borderRadius="md"
       width="20%"
       height={`${Math.abs(endY - startY)}px`}
-      bg="blue.400"
+      bg="rgba(72, 187, 120, 0.5)"
       overflow="hidden">
-      <Text px={1}>test</Text>
+      <Text px={1} fontSize="sm">
+        {getClosetSlotByY(Math.min(startY, endY))} ~ {getClosetSlotByY(Math.max(startY, endY))}
+      </Text>
     </Box>
   )
 }

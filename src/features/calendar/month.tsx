@@ -1,30 +1,36 @@
 import * as React from "react"
-import { Grid, Flex, Box, GridItem } from "@chakra-ui/react"
-import { getWeeksInMonth, addDays, startOfDay, startOfMonth, startOfWeek, endOfWeek, endOfMonth } from "date-fns"
+import { Flex, Box } from "@chakra-ui/react"
 
 import { useStore } from "@/store"
 
 import CalendarDay from "./day"
 
-function takeWeek(start = new Date()) {
+import { addDays, startOfDay, startOfMonth, startOfWeek, endOfWeek, endOfMonth, eachDayOfInterval } from "date-fns"
+
+type Week = Date[]
+
+function takeWeek(start: Date = new Date()): () => Week {
   let date = startOfWeek(startOfDay(start))
 
-  return function () {
-    const week = [...Array(7)].map((_, i) => addDays(date, i))
-    date = addDays(week[6], 1)
-    return week
+  return () => {
+    const result = eachDayOfInterval({
+      start: date,
+      end: endOfWeek(date),
+    })
+    date = addDays(result[6], 1)
+    return result
   }
 }
 
-function takeMonth(start = new Date()) {
-  let month: any = []
+function takeMonth(start: Date = new Date()): () => Week[] {
+  let month: Week[] = []
   let date = start
 
-  function lastDayOfRange(range: any) {
+  function lastDayOfRange(range: Week[]): Date {
     return range[range.length - 1][6]
   }
 
-  return function () {
+  return () => {
     const weekGen = takeWeek(startOfMonth(date))
     const endDate = startOfDay(endOfWeek(endOfMonth(date)))
     month.push(weekGen())
@@ -33,28 +39,17 @@ function takeMonth(start = new Date()) {
       month.push(weekGen())
     }
 
-    const range = month
+    const [range] = [month]
     month = []
     date = addDays(lastDayOfRange(range), 1)
 
     return range
   }
 }
-
 function CalendarMonth() {
-  const year = useStore((state) => state.year)
-  const month = useStore((state) => state.month)
+  const date = useStore((state) => state.date)
 
-  // start day of month
-  const start = new Date(`${year}/${month}/01`).getDay()
-
-  // number of days in month
-  const days = new Date(year, month, 0).getDate()
-
-  // array of days in month
-  const dateArray = Array.from({ length: days }, (_, i) => i + 1)
-
-  const slots = takeMonth(new Date(year, month, 0))() as Array<Array<Date>>
+  const slots = takeMonth(new Date(date))() as Array<Array<Date>>
 
   return (
     <Box as="tbody" role="rowgroup">
@@ -72,14 +67,3 @@ function CalendarMonth() {
 CalendarMonth.displayName = "CalendarMonth"
 
 export default React.memo(CalendarMonth)
-
-/**
-<Grid templateColumns="repeat(7, 1fr)" role="grid">
-  {Array.from({ length: start }, (_, i) => (
-    <GridItem key={i} tabIndex={-1} role="cell" aria-disabled="true" p={2} />
-  ))}
-  {dateArray.map((date) => (
-    <CalendarDay key={date} year={year} month={month} day={date} />
-  ))}
-</Grid>
- */

@@ -2,7 +2,7 @@ import * as React from "react"
 import { Box } from "@chakra-ui/react"
 
 import { useStore } from "@/store"
-import { displayTime } from "@/utils"
+import { padNumWithZero } from "@/utils"
 
 type SlotProps = {
   idx: number
@@ -19,11 +19,13 @@ function BoxerSlot({ idx, date, hour }: SlotProps) {
       flex="none"
       w="100%"
       h="15px"
-      id={`${date}-${displayTime(hour)}:${displayTime(minute)}`}
+      id={`${date}-${padNumWithZero(hour)}:${padNumWithZero(minute)}`}
       borderTop={minute === 0 ? "2px" : "1px"}
       borderColor="gray.700"
     />
   )
 }
+
+BoxerSlot.displayName = "BoxerSlot"
 
 export default React.memo(BoxerSlot)
