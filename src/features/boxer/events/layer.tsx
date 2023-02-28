@@ -16,7 +16,7 @@ type EventLayerProps = {
 function EventsLayer({ children }: EventLayerProps) {
   const isCreating = useStore((state) => state.layer.isCreating)
   const isUpdating = useStore((state) => state.layer.isUpdating)
-  const setLayer = useStore((state) => state.setLayer)
+  const resetLayer = useStore((state) => state.resetLayer)
   const createEvent = useStore((state) => state.createEvent)
   const updateEvent = useStore((state) => state.updateEvent)
 
@@ -43,11 +43,7 @@ function EventsLayer({ children }: EventLayerProps) {
 
   const handleReset = useCallbackRef(() => {
     resetPointer()
-    setLayer({
-      isCreating: false,
-      isUpdating: "",
-      isDragging: false,
-    })
+    resetLayer()
   })
 
   const handleAction = React.useCallback(
@@ -123,6 +119,13 @@ function EventsLayer({ children }: EventLayerProps) {
       document.removeEventListener("mousemove", handleMouseMove)
     }
   }, [isInteracting])
+
+  React.useEffect(() => {
+    document.addEventListener("resize", handleReset)
+    return () => {
+      document.removeEventListener("resize", handleReset)
+    }
+  }, [])
 
   const onMouseUp = React.useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {

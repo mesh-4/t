@@ -40,6 +40,7 @@ type Store = {
 
   layer: Layer
   setLayer: (layer: Partial<Layer>) => void
+  resetLayer: () => void
 
   pointer: Pointer
   setPointer: (pointer: Partial<Pointer>) => void
@@ -62,6 +63,7 @@ export const useStore = create<Store>((set, get) => ({
 
   layer: DEFAULT_LAYER,
   setLayer: (layer) => set((state) => ({ layer: { ...state.layer, ...layer } })),
+  resetLayer: () => set({ layer: DEFAULT_LAYER }),
 
   pointer: DEFAULT_POINTER,
   setPointer: (pointer) => set((state) => ({ pointer: { ...state.pointer, ...pointer } })),
