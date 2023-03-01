@@ -1,6 +1,5 @@
 import * as React from "react"
-import { Box, Input, InputGroup, InputRightElement, Button } from "@chakra-ui/react"
-import { FiPlus } from "react-icons/fi"
+import { Input, InputGroup, InputRightElement, Button } from "@chakra-ui/react"
 
 import { useStore } from "@/store"
 

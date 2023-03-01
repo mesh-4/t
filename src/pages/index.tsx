@@ -23,7 +23,7 @@ export default function Home() {
             <Boxer />
           </Box>
           <Flex flex="1" flexDir="column">
-            <Box mb={4} flex="none">
+            <Box mb={6} flex="none">
               <Calendar />
             </Box>
             <Box flex="auto" px={3}>

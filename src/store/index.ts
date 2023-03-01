@@ -8,6 +8,7 @@ export type BoxEvent = {
   title: string
   start: string
   end: string
+  createdAt: number
 }
 
 export type CreateBoxEventInput = {
@@ -97,6 +98,7 @@ export const useStore = create<Store>((set, get) => ({
       title: input.title,
       start: input.start || format(nearestSlot, "yyyy/MM/dd HH:mm"),
       end: input.end || format(nearestSlot + minutesToMilliseconds(15), "yyyy/MM/dd HH:mm"),
+      createdAt: Date.now(),
     }
 
     return set((state) => ({

@@ -1,14 +1,14 @@
 import * as React from "react"
-import { Box, Heading } from "@chakra-ui/react"
+import { Box, Text } from "@chakra-ui/react"
 
 import EventsList from "./list"
 
 function Events() {
   return (
     <Box>
-      <Heading mb={2} size="md">
+      <Text mb={2} fontSize="md" fontWeight="bold">
         Events
-      </Heading>
+      </Text>
       <EventsList />
     </Box>
   )
