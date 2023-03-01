@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Box, Flex, Text, Center, Button } from "@chakra-ui/react"
+import { Flex, Text, Center, Button } from "@chakra-ui/react"
 import { ListChildComponentProps, areEqual } from "react-window"
 
 import { useStore, BoxEvent } from "@/store"

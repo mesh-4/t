@@ -6,11 +6,19 @@ import { useStore } from "@/store"
 import EventBox from "./box"
 
 function EventsDay() {
-  const eventsInSameDate = useStore((state) => state.eventsInSameDate())
+  const date = useStore((state) => state.date)
+  const events = useStore((state) => state.events)
+
+  const listData = React.useMemo(() => {
+    const result = events.filter((event) => {
+      return event.start.startsWith(date)
+    })
+    return result
+  }, [date, events])
 
   return (
     <Box pos="absolute" top={2} left="60px" right={0}>
-      {eventsInSameDate.map((event, idx) => (
+      {listData.map((event, idx) => (
         <EventBox key={event.id} idx={idx} data={event} />
       ))}
     </Box>

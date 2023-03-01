@@ -1,5 +1,5 @@
 import * as React from "react"
-import { format } from "date-fns"
+import { format, isSameHour } from "date-fns"
 import { Box, Flex, Text } from "@chakra-ui/react"
 
 import { useStore, BoxEvent } from "@/store"
@@ -11,20 +11,24 @@ type EventBoxProps = {
 }
 
 function EventBox({ idx, data }: EventBoxProps) {
+  const events = useStore((state) => state.events)
   const endY = useStore((state) => state.pointer.end)
   const layerTarget = useStore((state) => state.layer.target)
-  const eventsInSameHour = useStore((state) => state.eventsInSameHour)
 
   const setLayer = useStore((state) => state.setLayer)
   const setPointer = useStore((state) => state.setPointer)
 
   const [startPoint, setStartPoint] = React.useState(getDateToY(data.start))
   const [endPoint, setEndPoint] = React.useState(getDateToY(data.end))
+  const [isFocus, setFocus] = React.useState(false)
 
   const left = React.useMemo(() => {
-    const events = eventsInSameHour(data.start)
-    return (100 / events.length) * events.indexOf(data)
-  }, [data, idx])
+    const date = data.start.split("-")[0]
+    const hourEvents = events
+      .filter((e) => e.start.startsWith(date))
+      .filter((e) => isSameHour(new Date(e.start), new Date(date)))
+    return (100 / hourEvents.length) * hourEvents.indexOf(data)
+  }, [idx, data, events])
 
   React.useEffect(() => {
     if (layerTarget === data.id) {
@@ -55,15 +59,19 @@ function EventBox({ idx, data }: EventBoxProps) {
     [data]
   )
 
+  const onContentClick = React.useCallback(() => {
+    setFocus((prev) => !prev)
+  }, [])
+
   return (
     <Box
       overflow="hidden"
       rounded="md"
-      bg="rgba(49, 130, 206, 0.5)"
+      bg={`rgba(49, 130, 206, ${isFocus ? 0.75 : 0.5})`}
       pos="absolute"
       inset={`${startPoint}px 0% -${endPoint}px ${left}%`}
       zIndex={idx + 1}>
-      <Flex pos="relative" px={1} height="100%" flexDir="column">
+      <Flex pos="relative" px={1} height="100%" flexDir="column" onClick={onContentClick}>
         <Flex flex="auto" flexDir={endPoint - startPoint > 25 ? "column" : "row"} w="100%" h="100%">
           <Text fontSize="sm" mr={2} lineHeight="20px">
             {format(new Date(data.start), "HH:mm")} ~ {format(new Date(data.end), "HH:mm")}

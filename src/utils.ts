@@ -1,6 +1,6 @@
 import { startOfDay } from "date-fns"
 
-export const prefixWith = (prefix: string) => (id: string | number) => `${prefix}-${id}`
+export const prefixWith = (prefix: string) => (id: string | number) => `${prefix} ${id}`
 
 export const padNumWithZero = (val: number) => (val < 10 ? `0${val}` : val)
 
