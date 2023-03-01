@@ -1,21 +1,21 @@
 import * as React from "react"
-import { Box } from "@chakra-ui/react"
+import AutoSizer from "react-virtualized-auto-sizer"
+import { FixedSizeList as List } from "react-window"
 
 import { useStore } from "@/store"
 
-import EventCreator from "./creator"
-import EventListItem from "./list-item"
-
+import EventsListRow from "./list-row"
 function EventsList() {
   const events = useStore((state) => state.events)
 
   return (
-    <Box w="full">
-      <EventCreator />
-      {events.map((event) => (
-        <EventListItem key={event.id} data={event} />
-      ))}
-    </Box>
+    <AutoSizer>
+      {({ height, width }) => (
+        <List width={width} height={height} itemSize={45} itemData={events} itemCount={events.length}>
+          {EventsListRow}
+        </List>
+      )}
+    </AutoSizer>
   )
 }
 

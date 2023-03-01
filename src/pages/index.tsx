@@ -26,7 +26,7 @@ export default function Home() {
             <Box mb={6} flex="none">
               <Calendar />
             </Box>
-            <Box flex="auto" px={3}>
+            <Box px={3} flex="auto" h="full">
               <Events />
             </Box>
           </Flex>
