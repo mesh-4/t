@@ -7,10 +7,9 @@ import { getClosetSlotByY } from "@/utils"
 function EventPlaceholder() {
   const endY = useStore((state) => state.pointer.end)
   const startY = useStore((state) => state.pointer.start)
-  const isCreating = useStore((state) => state.layer.isCreating)
-  const isUpdating = useStore((state) => state.layer.isUpdating)
+  const status = useStore((state) => state.layer.status)
 
-  if (!isCreating && isUpdating !== "") {
+  if (status !== "creating") {
     return null
   }
 

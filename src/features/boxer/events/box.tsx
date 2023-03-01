@@ -12,7 +12,7 @@ type EventBoxProps = {
 
 function EventBox({ idx, data }: EventBoxProps) {
   const endY = useStore((state) => state.pointer.end)
-  const isUpdating = useStore((state) => state.layer.isUpdating)
+  const layerTarget = useStore((state) => state.layer.target)
   const eventsInSameHour = useStore((state) => state.eventsInSameHour)
 
   const setLayer = useStore((state) => state.setLayer)
@@ -27,15 +27,13 @@ function EventBox({ idx, data }: EventBoxProps) {
   }, [data, idx])
 
   React.useEffect(() => {
-    setStartPoint(getDateToY(data.start))
-    setEndPoint(getDateToY(data.end))
-  }, [data])
-
-  React.useEffect(() => {
-    if (isUpdating === data.id) {
+    if (layerTarget === data.id) {
       setEndPoint(endY)
+    } else {
+      setStartPoint(getDateToY(data.start))
+      setEndPoint(getDateToY(data.end))
     }
-  }, [endY, isUpdating])
+  }, [endY, data, layerTarget])
 
   const onMouseDown = React.useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -46,14 +44,13 @@ function EventBox({ idx, data }: EventBoxProps) {
       const startSlotY = getDateToY(data.start)
       const endSlotY = getDateToY(data.end)
       setLayer({
-        isUpdating: data.id,
+        status: "updating",
+        target: data.id,
       })
       setPointer({
         start: startSlotY,
         end: endSlotY,
       })
-      setStartPoint(startSlotY)
-      setEndPoint(endSlotY)
     },
     [data]
   )
@@ -67,11 +64,14 @@ function EventBox({ idx, data }: EventBoxProps) {
       inset={`${startPoint}px 0% -${endPoint}px ${left}%`}
       zIndex={idx + 1}>
       <Flex pos="relative" px={1} height="100%" flexDir="column">
-        <Box flex="auto" w="100%" h="100%">
-          <Text fontSize="sm" lineHeight="20px">
+        <Flex flex="auto" flexDir={endPoint - startPoint > 25 ? "column" : "row"} w="100%" h="100%">
+          <Text fontSize="sm" mr={2} lineHeight="20px">
             {format(new Date(data.start), "HH:mm")} ~ {format(new Date(data.end), "HH:mm")}
           </Text>
-        </Box>
+          <Text fontSize="sm" lineHeight="20px">
+            {data.title}
+          </Text>
+        </Flex>
         <Box pos="absolute" bottom={0} w="100%" h="8px" cursor="row-resize" onMouseDown={onMouseDown} />
       </Flex>
     </Box>

@@ -5,9 +5,9 @@ import { useStore } from "@/store"
 
 type EventsCreateLayerProps = {
   getTimeline: () => {
-    currentScroll: number
     topEdge: number
     bottomEdge: number
+    currentScroll: number
   }
 }
 
@@ -17,9 +17,7 @@ function EventsCreateLayer({ getTimeline }: EventsCreateLayerProps) {
 
   const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault()
-    if (e.type !== "mousedown") {
-      return
-    }
+    if (e.type !== "mousedown") return
 
     const { topEdge, currentScroll } = getTimeline()
     const startPoint = e.clientY + currentScroll - topEdge
@@ -29,7 +27,7 @@ function EventsCreateLayer({ getTimeline }: EventsCreateLayerProps) {
       end: startPoint,
     })
     setLayer({
-      isCreating: true,
+      status: "creating",
     })
   }
 

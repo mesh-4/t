@@ -1,14 +1,22 @@
 import { create } from "zustand"
-import { format, isSameHour } from "date-fns"
+import { format, isSameHour, minutesToMilliseconds } from "date-fns"
 import merge from "lodash/merge"
+import { nanoid } from "nanoid"
 
 export type BoxEvent = {
   id: string
+  title: string
   start: string
   end: string
 }
 
-type Pointer = {
+export type CreateBoxEventInput = {
+  title: string
+  start?: string
+  end?: string
+}
+
+export type Pointer = {
   start: number
   end: number
 }
@@ -19,15 +27,13 @@ const DEFAULT_POINTER = {
 } as Pointer
 
 type Layer = {
-  isCreating: boolean
-  isUpdating: string
-  isDragging: boolean
+  status: "idle" | "creating" | "updating"
+  target: string
 }
 
 const DEFAULT_LAYER = {
-  isCreating: false,
-  isUpdating: "",
-  isDragging: false,
+  status: "idle",
+  target: "",
 } as Layer
 
 const DEFAULT_DATE = format(new Date(), "yyyy/MM/dd")
@@ -50,7 +56,7 @@ type Store = {
   events: BoxEvent[]
   eventsInSameDate: () => BoxEvent[]
   eventsInSameHour: (date: string) => BoxEvent[]
-  createEvent: (event: BoxEvent) => void
+  createEvent: (input: CreateBoxEventInput) => void
   updateEvent: (id: string, event: Partial<Omit<BoxEvent, "id">>) => void
   deleteEvent: (id: string) => void
 }
@@ -80,7 +86,20 @@ export const useStore = create<Store>((set, get) => ({
     const events = get().eventsInSameDate()
     return events.filter((e) => isSameHour(new Date(e.start), new Date(date)))
   },
-  createEvent: (event) => set((state) => ({ events: [...state.events, event] })),
+  createEvent: (input) => {
+    const createTime = Date.now()
+
+    const event = {
+      id: nanoid(),
+      title: input.title,
+      start: input.start || format(createTime, "yyyy/MM/dd HH:mm"),
+      end: input.end || format(createTime + minutesToMilliseconds(15), "yyyy/MM/dd HH:mm"),
+    }
+
+    return set((state) => ({
+      events: [...state.events, event],
+    }))
+  },
   updateEvent: (id, event) =>
     set((state) => ({ events: state.events.map((e) => (e.id === id ? merge(e, event) : e)) })),
   deleteEvent: (id) => set((state) => ({ events: state.events.filter((e) => e.id !== id) })),
