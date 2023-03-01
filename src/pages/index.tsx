@@ -3,7 +3,7 @@ import { Box, Flex } from "@chakra-ui/react"
 
 import Boxer from "@/features/boxer"
 import Calendar from "@/features/calendar"
-import Note from "@/features/note"
+import Events from "@/features/events"
 
 export default function Home() {
   return (
@@ -27,7 +27,7 @@ export default function Home() {
               <Calendar />
             </Box>
             <Box flex="auto" px={3}>
-              <Note />
+              <Events />
             </Box>
           </Flex>
         </Flex>

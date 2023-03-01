@@ -89,11 +89,14 @@ export const useStore = create<Store>((set, get) => ({
   createEvent: (input) => {
     const createTime = Date.now()
 
+    // * find nearest 15 minutes
+    const nearestSlot = Math.round(createTime / minutesToMilliseconds(15)) * minutesToMilliseconds(15)
+
     const event = {
       id: nanoid(),
       title: input.title,
-      start: input.start || format(createTime, "yyyy/MM/dd HH:mm"),
-      end: input.end || format(createTime + minutesToMilliseconds(15), "yyyy/MM/dd HH:mm"),
+      start: input.start || format(nearestSlot, "yyyy/MM/dd HH:mm"),
+      end: input.end || format(nearestSlot + minutesToMilliseconds(15), "yyyy/MM/dd HH:mm"),
     }
 
     return set((state) => ({
