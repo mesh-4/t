@@ -9,16 +9,13 @@ function EventsDay() {
   const date = useStore((state) => state.date)
   const events = useStore((state) => state.events)
 
-  const listData = React.useMemo(() => {
-    const result = events.filter((event) => {
-      return event.start.startsWith(date)
-    })
-    return result
+  const data = React.useMemo(() => {
+    return events.filter((event) => event.start.startsWith(date))
   }, [date, events])
 
   return (
     <Box pos="absolute" top={2} left="60px" right={0}>
-      {listData.map((event, idx) => (
+      {data.map((event, idx) => (
         <EventBox key={event.id} idx={idx} data={event} />
       ))}
     </Box>

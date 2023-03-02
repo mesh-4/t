@@ -16,6 +16,7 @@ specifiers:
   date-fns: ^2.29.3
   framer-motion: ^9.0.4
   jotai: ^2.0.2
+  localforage: ^1.10.0
   lodash: ^4.17.21
   nanoid: ^4.0.1
   next: 13.1.6
@@ -41,6 +42,7 @@ dependencies:
   date-fns: 2.29.3
   framer-motion: 9.0.4_biqbaboplfbrettd7655fr4n2y
   jotai: 2.0.2_react@18.2.0
+  localforage: 1.10.0
   lodash: 4.17.21
   nanoid: 4.0.1
   next: 13.1.6_biqbaboplfbrettd7655fr4n2y
@@ -1755,6 +1757,10 @@ packages:
       react-is: 16.13.1
     dev: false
 
+  /immediate/3.0.6:
+    resolution: {integrity: sha512-XXOFtyqDjNDAQxVfYxuF7g9Il/IbWmmlQg2MYKOH8ExIT1qg6xc4zyS3HaEEATgs1btfzxq15ciUiY7gjSXRGQ==}
+    dev: false
+
   /import-fresh/3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
     engines: {node: '>=6'}
@@ -1799,8 +1805,20 @@ packages:
     resolution: {integrity: sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==}
     dev: false
 
+  /lie/3.1.1:
+    resolution: {integrity: sha512-RiNhHysUjhrDQntfYSfY4MU24coXXdEOgw9WGcKHNeEwffDYbF//u87M1EWaMGzuFoSbqW0C9C6lEEhDOAswfw==}
+    dependencies:
+      immediate: 3.0.6
+    dev: false
+
   /lines-and-columns/1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
+    dev: false
+
+  /localforage/1.10.0:
+    resolution: {integrity: sha512-14/H1aX7hzBBmmh7sGPd+AOMkkIrHM3Z1PAyGgZigA1H1p5O5ANnMyWzvpAETtG68/dC4pC0ncy3+PPGzXZHPg==}
+    dependencies:
+      lie: 3.1.1
     dev: false
 
   /lodash.mergewith/4.6.2:

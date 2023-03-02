@@ -7,9 +7,9 @@ import { getClosetSlotByY } from "@/utils"
 function EventPlaceholder() {
   const endY = useStore((state) => state.pointer.end)
   const startY = useStore((state) => state.pointer.start)
-  const status = useStore((state) => state.layer.status)
+  const layerStatus = useStore((state) => state.layer.status)
 
-  if (status !== "creating") {
+  if (layerStatus !== "creating") {
     return null
   }
 
@@ -18,10 +18,10 @@ function EventPlaceholder() {
       pos="absolute"
       left="60px"
       top={`${Math.min(startY, endY)}px`}
-      width="calc(100% - 60px)"
-      height={`${Math.abs(endY - startY)}px`}
+      w="calc(100% - 60px)"
+      h={`${Math.abs(endY - startY)}px`}
+      bg="rgba(72, 187, 120, 0.5)"
       rounded="md"
-      background="rgba(72, 187, 120, 0.5)"
       zIndex="9999"
       overflow="hidden"
       pointerEvents="none">

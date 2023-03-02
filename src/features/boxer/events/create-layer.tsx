@@ -1,5 +1,4 @@
 import * as React from "react"
-import { Box } from "@chakra-ui/react"
 
 import { useStore } from "@/store"
 
@@ -31,7 +30,18 @@ function EventsCreateLayer({ getTimeline }: EventsCreateLayerProps) {
     })
   }
 
-  return <Box pos="absolute" top={2} left={0} h="calc(100% - 8px)" w="100%" onMouseDown={onMouseDown} />
+  return (
+    <div
+      style={{
+        position: "absolute",
+        top: "8px",
+        left: 0,
+        width: "100%",
+        height: "calc(100% - 8px)",
+      }}
+      onMouseDown={onMouseDown}
+    />
+  )
 }
 
 EventsCreateLayer.displayName = "EventsCreateLayer"

@@ -10,6 +10,7 @@ function CurrentTimeIndicator() {
   React.useEffect(() => {
     const tick = () => {
       if (indicatorRef.current) {
+        indicatorRef.current.style.display = "flex"
         indicatorRef.current.style.top = `${getYByTime(Date.now()) + 8}px`
       }
       rAF.current = requestAnimationFrame(tick)
@@ -25,6 +26,7 @@ function CurrentTimeIndicator() {
   return (
     <Flex
       ref={indicatorRef}
+      display="none"
       flex="none"
       w="100%"
       userSelect="none"

@@ -1,6 +1,6 @@
 import * as React from "react"
 
-import BoxerBody from "./body"
+import BoxerTimeline from "./timeline"
 import EventsLayer from "./events/layer"
 import EventPlaceholder from "./events/placeholder"
 import CurrentTimeIndicator from "./indicator/current-time"
@@ -9,10 +9,12 @@ function Boxer() {
   return (
     <EventsLayer>
       <CurrentTimeIndicator />
-      <BoxerBody />
+      <BoxerTimeline />
       <EventPlaceholder />
     </EventsLayer>
   )
 }
 
-export default Boxer
+Boxer.displayName = "Boxer"
+
+export default React.memo(Boxer)
