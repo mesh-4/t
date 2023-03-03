@@ -1,10 +1,16 @@
 import Head from "next/head"
+import { isEmpty } from "lodash"
 import { FiMoon, FiSun } from "react-icons/fi"
+import { useRouter } from "next/router"
 import { Box, Flex, Heading, Button, IconButton, useColorMode } from "@chakra-ui/react"
 import { signIn } from "next-auth/react"
 
+import { useSession } from "@/hooks/use-session"
+
 export default function Home() {
   const { colorMode, toggleColorMode } = useColorMode()
+  const [data] = useSession()
+  const router = useRouter()
 
   return (
     <>
@@ -23,13 +29,16 @@ export default function Home() {
 
           <Flex>
             <IconButton
+              mr={2}
               aria-label="toggle theme"
               icon={colorMode === "light" ? <FiMoon /> : <FiSun />}
               onClick={toggleColorMode}
             />
-            <Button ml={2} onClick={() => signIn()}>
-              Join
-            </Button>
+            {isEmpty(data) ? (
+              <Button onClick={() => signIn()}>Join</Button>
+            ) : (
+              <Button onClick={() => router.push("/app")}>Dashboard</Button>
+            )}
           </Flex>
         </Flex>
       </Box>

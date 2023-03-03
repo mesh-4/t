@@ -48,7 +48,6 @@ function CalendarDay({ date }: CalendarDayProps) {
           onClick={onDateChange}
           opacity={isSameMonth(date, new Date(currentDate)) ? 1 : 0.5}
           {...(isSelected && {
-            px: 1,
             bg: "red.500",
             color: "white",
             rounded: "full",
