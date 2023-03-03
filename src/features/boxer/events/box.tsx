@@ -2,16 +2,17 @@ import * as React from "react"
 import { format, isSameHour } from "date-fns"
 import { Box, Flex, Text } from "@chakra-ui/react"
 
+import { useStore } from "@/store"
 import { getYByTime } from "@/utils"
-import { useStore, BoxEvent } from "@/store"
+import type { Event } from "@/api/event"
 
 type EventBoxProps = {
   idx: number
-  data: BoxEvent
+  data: Event
+  listData?: Event[]
 }
 
-function EventBox({ idx, data }: EventBoxProps) {
-  const events = useStore((state) => state.events)
+function EventBox({ idx, data, listData = [] }: EventBoxProps) {
   const endY = useStore((state) => state.pointer.end)
   const layerTarget = useStore((state) => state.layer.target)
 
@@ -22,12 +23,9 @@ function EventBox({ idx, data }: EventBoxProps) {
   const [endPoint, setEndPoint] = React.useState(getYByTime(data.end))
 
   const left = React.useMemo(() => {
-    const date = data.start.split("-")[0]
-    const hourEvents = events
-      .filter((e) => e.start.startsWith(date))
-      .filter((e) => isSameHour(new Date(e.start), new Date(date)))
+    const hourEvents = listData.filter((e) => isSameHour(new Date(e.start), new Date(data.start)))
     return (100 / hourEvents.length) * hourEvents.indexOf(data)
-  }, [idx, data, events])
+  }, [idx, data, listData])
 
   React.useEffect(() => {
     if (layerTarget === data.id) {

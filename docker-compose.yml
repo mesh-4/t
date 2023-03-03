@@ -1,0 +1,35 @@
+version: "3.7"
+
+services:
+  postgres:
+    image: postgres:12-alpine
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=database
+    ports:
+      - "5432:5432"
+    networks:
+      - underlying
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  redis:
+    image: bitnami/redis:6.0
+    platform: linux/amd64
+    environment:
+      - REDIS_PASSWORD=password
+    ports:
+      - "6379:6379"
+    networks:
+      - underlying
+    volumes:
+      - redis-data:/bitnami/redis/data
+
+volumes:
+  postgres-data:
+  redis-data:
+
+networks:
+  underlying:
+    driver: bridge

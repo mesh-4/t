@@ -1,11 +1,14 @@
 import * as React from "react"
 import { isSameDay } from "date-fns"
 import { Box } from "@chakra-ui/react"
+import { useQueryClient } from "@tanstack/react-query"
 
 import { useStore } from "@/store"
 import { TIMELINE_ID } from "@/constants"
 import { useCallbackRef } from "@/hooks/use-callback-ref"
 import { prefixWith, getClosetSlotByY, getYByTime } from "@/utils"
+
+import { useCreateEvent, useUpdateEvent } from "@/hooks/events/mutations"
 
 import EventDay from "./day"
 import EventsCreateLayer from "./create-layer"
@@ -21,12 +24,13 @@ function EventsLayer({ children }: EventLayerProps) {
   const layerStatus = useStore((state) => state.layer.status)
   const resetLayer = useStore((state) => state.resetLayer)
 
-  const createEvent = useStore((state) => state.createEvent)
-  const updateEvent = useStore((state) => state.updateEvent)
-
   const getPointer = useStore((state) => state.getPointer)
   const setPointer = useStore((state) => state.setPointer)
   const resetPointer = useStore((state) => state.resetPointer)
+
+  const queryClient = useQueryClient()
+  const { mutate: createEvent } = useCreateEvent()
+  const { mutate: updateEvent } = useUpdateEvent()
 
   const timelineRef = React.useRef<HTMLDivElement>(null)
 
@@ -54,17 +58,36 @@ function EventsLayer({ children }: EventLayerProps) {
 
     if (layerStatus === "creating") {
       const startY = getPointer("start")
-      createEvent({
-        title: "New Event",
-        start: prefixWith(date)(getClosetSlotByY(Math.min(startY, endY))),
-        end: prefixWith(date)(getClosetSlotByY(Math.max(startY, endY))),
-      })
+      createEvent(
+        {
+          title: "New Event",
+          start: prefixWith(date)(getClosetSlotByY(Math.min(startY, endY))),
+          end: prefixWith(date)(getClosetSlotByY(Math.max(startY, endY))),
+        },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({
+              queryKey: ["events"],
+            })
+          },
+        }
+      )
     }
 
     if (layerStatus === "updating") {
-      updateEvent(layerTarget, {
-        end: prefixWith(date)(getClosetSlotByY(getPointer("end"))),
-      })
+      updateEvent(
+        {
+          id: layerTarget,
+          end: prefixWith(date)(getClosetSlotByY(getPointer("end"))),
+        },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({
+              queryKey: ["events"],
+            })
+          },
+        }
+      )
     }
   }
 

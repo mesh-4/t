@@ -1,3 +1,13 @@
+import type { QueryClientConfig } from "@tanstack/react-query"
+
+export const QUERY_CLIENT_CONFIG: QueryClientConfig = {
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+}
+
 export const TIMELINE_ID = "timeline"
 
 // TODO make it configurable dynamically

@@ -1,17 +1,26 @@
 import * as React from "react"
+import { useQueryClient } from "@tanstack/react-query"
 import { Flex, Text, Center, Button } from "@chakra-ui/react"
 import { ListChildComponentProps, areEqual } from "react-window"
 
-import { useStore, BoxEvent } from "@/store"
+import { useDeleteEvent } from "@/hooks/events/mutations"
+import type { Event } from "@/api/event"
 
-function EventsListRow({ index, style, data }: ListChildComponentProps<BoxEvent[]>) {
-  const deleteEvent = useStore((state) => state.deleteEvent)
+function EventsListRow({ index, style, data }: ListChildComponentProps<Event[]>) {
+  const queryClient = useQueryClient()
+  const { mutate: deleteEvent } = useDeleteEvent()
 
   const item = data[index]
 
   const onDeleteClick = (e: React.MouseEvent) => {
     e.preventDefault()
-    deleteEvent(item.id)
+    deleteEvent(item.id, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["events"],
+        })
+      },
+    })
   }
 
   return (
