@@ -1,6 +1,6 @@
 import * as React from "react"
 import { useQueryClient } from "@tanstack/react-query"
-import { Flex, Text, Center, Button } from "@chakra-ui/react"
+import { Flex, Text, Center, Button, useColorModeValue } from "@chakra-ui/react"
 import { ListChildComponentProps, areEqual } from "react-window"
 
 import { useDeleteEvent } from "@/hooks/events/mutations"
@@ -9,6 +9,7 @@ import type { Event } from "@/api/event"
 function EventsListRow({ index, style, data }: ListChildComponentProps<Event[]>) {
   const queryClient = useQueryClient()
   const { mutate: deleteEvent } = useDeleteEvent()
+  const borderColor = useColorModeValue("gray.200", "gray.600")
 
   const item = data[index]
 
@@ -33,7 +34,7 @@ function EventsListRow({ index, style, data }: ListChildComponentProps<Event[]>)
         border="1px"
         h="40px"
         rounded="md"
-        borderColor="gray.600">
+        borderColor={borderColor}>
         <Text>{item.title}</Text>
         <Center w="5rem">
           <Button mx="auto" size="sm" variant="ghost" onClick={onDeleteClick}>

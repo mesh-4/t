@@ -1,8 +1,10 @@
 import * as React from "react"
-import { Box, Flex, Text } from "@chakra-ui/react"
+import { Box, Flex, Text, useColorModeValue } from "@chakra-ui/react"
 import { ListChildComponentProps, areEqual } from "react-window"
 
 function TimelineSlot({ data, index, style }: ListChildComponentProps<string[]>) {
+  const borderColor = useColorModeValue("gray.300", "gray.700")
+
   const label = data[index]
   const [hour, minutes] = label.split(":")
   const startOfHour = minutes === "00"
@@ -17,7 +19,7 @@ function TimelineSlot({ data, index, style }: ListChildComponentProps<string[]>)
             </Text>
           )}
         </Box>
-        <Box flex="auto" w="100%" id={label} borderTop={startOfHour ? "2px" : "1px"} borderColor="gray.700" />
+        <Box flex="auto" w="100%" id={label} borderTop={startOfHour ? "2px" : "1px"} borderColor={borderColor} />
       </Flex>
     </div>
   )
