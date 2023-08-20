@@ -64,7 +64,7 @@ const handler: NextApiHandler = async (req, res) => {
     const link = await prisma.event.create({
       data: {
         title: input.title,
-        start: new Date(input.start ?? nearestSlot),
+        start: new Date(input.start ?? createTime),
         end: new Date(input.end ?? nearestSlot + minutesToMilliseconds(15)),
         user: {
           connect: {

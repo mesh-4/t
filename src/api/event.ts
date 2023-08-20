@@ -5,8 +5,8 @@ import type { ReadEventsQuery, CreateEventInput, UpdateEventInput } from "@/type
 export type Event = {
   id: string
   title: string
-  start: string
-  end: string
+  start: number
+  end: number
   createdAt: string
   updatedAt: string
 }
