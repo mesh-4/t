@@ -1,4 +1,5 @@
-import Head from "next/head"
+"use client"
+
 import { Box, Flex } from "@chakra-ui/react"
 
 import Boxer from "@/features/boxer"
@@ -6,12 +7,9 @@ import Calendar from "@/features/calendar"
 import Events from "@/features/events"
 import Settings from "@/features/settings"
 
-export default function Home() {
+export default function CoreApp() {
   return (
     <>
-      <Head>
-        <title>Timebox</title>
-      </Head>
       <Box
         mx="auto"
         py="30px"

@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 import { format, eachDayOfInterval, startOfWeek, endOfWeek } from "date-fns"
 import { Box, Flex, Text } from "@chakra-ui/react"

@@ -1,10 +1,9 @@
 import isNil from "lodash/isNil"
 import omitBy from "lodash/omitBy"
-import { getServerSession } from "next-auth/next"
 import type { NextApiHandler } from "next"
 
 import prisma from "@/libs/prisma"
-import { authOptions } from "@/pages/api/auth/[...nextauth]"
+import { getSessionUser } from "@/auth/get-session-user"
 import type { UpdateEventInput } from "@/types"
 
 const handler: NextApiHandler = async (req, res) => {
@@ -14,8 +13,8 @@ const handler: NextApiHandler = async (req, res) => {
     return res.status(405).end()
   }
 
-  const session = await getServerSession(req, res, authOptions)
-  if (!session?.user || session.user.id === "") {
+  const user = await getSessionUser({ req, res })
+  if (!user) {
     return res.status(401).end()
   }
 
@@ -24,7 +23,7 @@ const handler: NextApiHandler = async (req, res) => {
       id: eventId,
     },
   })
-  if (!event || event.userId !== session.user.id) {
+  if (!event || event.userId !== user.id) {
     return res.status(req.method === "GET" ? 404 : 403).end()
   }
 

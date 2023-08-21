@@ -1,9 +1,8 @@
-import { getServerSession } from "next-auth/next"
 import { startOfDay, endOfDay, minutesToMilliseconds } from "date-fns"
 import type { NextApiHandler } from "next"
 
 import prisma from "@/libs/prisma"
-import { authOptions } from "@/pages/api/auth/[...nextauth]"
+import { getSessionUser } from "@/auth/get-session-user"
 import type { CreateEventInput, ReadEventsQuery } from "@/types"
 
 const handler: NextApiHandler = async (req, res) => {
@@ -11,8 +10,8 @@ const handler: NextApiHandler = async (req, res) => {
     return res.status(405).end()
   }
 
-  const session = await getServerSession(req, res, authOptions)
-  if (!session?.user || session.user.id === "") {
+  const user = await getSessionUser({ req, res })
+  if (!user) {
     return res.status(401).end()
   }
 
@@ -21,7 +20,7 @@ const handler: NextApiHandler = async (req, res) => {
 
     const data = await prisma.event.findMany({
       where: {
-        userId: session.user.id,
+        userId: user.id,
         ...(date && {
           start: {
             gte: startOfDay(new Date(date)),
@@ -42,7 +41,7 @@ const handler: NextApiHandler = async (req, res) => {
 
     const length = await prisma.event.count({
       where: {
-        id: session.user.id,
+        id: user.id,
       },
     })
 
@@ -68,7 +67,7 @@ const handler: NextApiHandler = async (req, res) => {
         end: new Date(input.end ?? nearestSlot + minutesToMilliseconds(15)),
         user: {
           connect: {
-            id: session.user.id,
+            id: user.id,
           },
         },
       },
