@@ -1,5 +1,6 @@
+"use client"
+
 import * as React from "react"
-import { Box, Flex } from "@chakra-ui/react"
 
 import { getYByTime } from "@/utils"
 
@@ -24,32 +25,15 @@ function CurrentTimeIndicator() {
   }, [])
 
   return (
-    <Flex
+    <div
       ref={indicatorRef}
-      display="none"
-      flex="none"
-      w="100%"
-      userSelect="none"
-      align="center"
-      pos="absolute"
-      left="0px"
-      zIndex="docked"
-      transform="translateY(-50%)">
-      <Box w="60px" flex="none" />
-      <Box w="100%" flex="auto" pos="relative">
-        <Box w="100%" h="1px" bg="red.500" />
-        <Box
-          w="8px"
-          h="8px"
-          bg="red.500"
-          rounded="full"
-          pos="absolute"
-          top="0px"
-          left="0px"
-          transform="translate(-50%, -50%)"
-        />
-      </Box>
-    </Flex>
+      className="hidden flex-none w-full select-none items-center absolute left-0 z-[30] -translate-y-1/2">
+      <div className="flex-none w-[60px]" />
+      <div className="flex-auto w-full relative">
+        <div className="w-full h-[1px] bg-red-500" />
+        <div className="w-2 h-2 bg-red-500 rounded-full absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+      </div>
+    </div>
   )
 }
 

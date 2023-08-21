@@ -1,13 +1,30 @@
+"use client"
+
 import * as React from "react"
-import { useColorMode, Button } from "@chakra-ui/react"
+import { useTheme } from "next-themes"
+
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 function ColorModeBtn() {
-  const { colorMode, toggleColorMode } = useColorMode()
+  const [mounted, setMounted] = React.useState(false)
+  const { theme, setTheme } = useTheme()
 
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) return null
   return (
-    <Button size="sm" variant="outline" onClick={toggleColorMode}>
-      {colorMode === "light" ? "Dark" : "Light"}
-    </Button>
+    <Select value={theme} onValueChange={(val) => setTheme(val)}>
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="Theme" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="light">Light</SelectItem>
+        <SelectItem value="dark">Dark</SelectItem>
+        <SelectItem value="system">System</SelectItem>
+      </SelectContent>
+    </Select>
   )
 }
 

@@ -1,5 +1,4 @@
 import * as React from "react"
-import { Flex, Box } from "@chakra-ui/react"
 
 import { useStore } from "@/store"
 
@@ -52,15 +51,15 @@ function CalendarMonth() {
   const slots = takeMonth(new Date(date))() as Array<Array<Date>>
 
   return (
-    <Box as="tbody" role="rowgroup">
+    <tbody role="rowgroup">
       {slots.map((week, i) => (
-        <Flex key={`week-${i}`} as="tr" w="100%" role="row">
+        <tr key={`week-${i}`} role="row" className="flex w-full">
           {week.map((day, j) => (
             <CalendarDay key={`day-${j}`} date={day} />
           ))}
-        </Flex>
+        </tr>
       ))}
-    </Box>
+    </tbody>
   )
 }
 

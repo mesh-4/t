@@ -1,15 +1,14 @@
 import * as React from "react"
 import { useQueryClient } from "@tanstack/react-query"
-import { Flex, Text, Center, Button, useColorModeValue } from "@chakra-ui/react"
 import { ListChildComponentProps, areEqual } from "react-window"
 
 import { useDeleteEvent } from "@/hooks/events/mutations"
+import { Button } from "@/components/ui/button"
 import type { Event } from "@/api/event"
 
 function EventsListRow({ index, style, data }: ListChildComponentProps<Event[]>) {
   const queryClient = useQueryClient()
   const { mutate: deleteEvent } = useDeleteEvent()
-  const borderColor = useColorModeValue("gray.200", "gray.600")
 
   const item = data[index]
 
@@ -26,22 +25,16 @@ function EventsListRow({ index, style, data }: ListChildComponentProps<Event[]>)
 
   return (
     <div style={style}>
-      <Flex
-        mt="5px"
-        pl={4}
-        alignItems="center"
-        justifyContent="space-between"
-        border="1px"
-        h="40px"
-        rounded="md"
-        borderColor={borderColor}>
-        <Text>{item.title}</Text>
-        <Center w="5rem">
-          <Button mx="auto" size="sm" variant="ghost" onClick={onDeleteClick}>
+      <div className="flex mt-[5px] pl-4 items-center justify-between border-[1px] h-[40px] rounded-md border-gray-200 dark:border-gray-600">
+        <div>
+          <p>{item.title}</p>
+        </div>
+        <div>
+          <Button size="sm" variant="ghost" onClick={onDeleteClick}>
             Delete
           </Button>
-        </Center>
-      </Flex>
+        </div>
+      </div>
     </div>
   )
 }

@@ -1,3 +1,6 @@
+import { twMerge } from "tailwind-merge"
+import { type ClassValue, clsx } from "clsx"
+
 import { SLOT_UNIT, SLOT_LABELS, SLOTS_HEIGHT, SLOT_HEIGHT } from "./constants"
 
 export function prefixWith(prefix: string) {
@@ -43,4 +46,8 @@ export function getClosetSlotByY(targetY: number) {
 export function getClosetSlotByTime(time: number | string) {
   const y = getYByTime(time)
   return getClosetSlotByY(y)
+}
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
 }

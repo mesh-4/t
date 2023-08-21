@@ -1,8 +1,9 @@
+"use client"
+
 import * as React from "react"
 import { useSession } from "next-auth/react"
-import { Box, Text, BoxProps } from "@chakra-ui/react"
 
-function Profile({ ...boxProps }: BoxProps) {
+function Profile() {
   const { data: session } = useSession()
 
   if (!session?.user) {
@@ -10,17 +11,13 @@ function Profile({ ...boxProps }: BoxProps) {
   }
 
   return (
-    <Box pl={3} py={2} pos="relative" userSelect="none" {...boxProps}>
-      <Text fontSize="sm" lineHeight="1">
-        {session.user.name}
-      </Text>
-      <Text fontSize="xs" lineHeight="1.15">
-        {session.user.email}
-      </Text>
-    </Box>
+    <div className="pl-3 py-2 relative select-none">
+      <p className="text-sm leading-[1]">{session.user.name}</p>
+      <p className="text-xs leading-[1.15]">{session.user.email}</p>
+    </div>
   )
 }
 
 Profile.displayName = "Profile"
 
-export default React.memo(Profile)
+export default Profile

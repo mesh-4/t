@@ -1,6 +1,7 @@
+"use client"
+
 import * as React from "react"
 import { isSameDay } from "date-fns"
-import { Box } from "@chakra-ui/react"
 import { useQueryClient } from "@tanstack/react-query"
 
 import { useStore } from "@/store"
@@ -186,21 +187,18 @@ function EventsLayer({ children }: EventLayerProps) {
   )
 
   return (
-    <Box
+    <div
       id={TIMELINE_ID}
       ref={timelineRef}
-      w="100%"
-      h="100%"
-      pos="relative"
-      overflowY="scroll"
+      className="w-full h-full relative overflow-y-scroll"
       onMouseUp={onMouseUp}
       onMouseMove={onMouseMove}>
-      <Box pos="relative" w="full">
+      <div className="relative w-full">
         {children}
         <EventDay />
         <EventsCreateLayer getTimeline={getTimeline} />
-      </Box>
-    </Box>
+      </div>
+    </div>
   )
 }
 

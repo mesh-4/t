@@ -1,7 +1,7 @@
 import * as React from "react"
 import { format, isSameDay, isSameMonth, subDays, addDays } from "date-fns"
-import { Box, Flex, Text } from "@chakra-ui/react"
 
+import { cn } from "@/utils"
 import { useStore } from "@/store"
 
 type CalendarDayProps = {
@@ -38,24 +38,20 @@ function CalendarDay({ date }: CalendarDayProps) {
   }
 
   return (
-    <Box as="td" flex={1} tabIndex={isSelected ? 0 : -1} role="gridcell" pos="relative" onKeyDown={onKeyDown}>
-      <Flex alignItems="center" justifyContent="center">
-        <Text
+    <td className="flex-1 relative" tabIndex={isSelected ? 0 : -1} role="gridcell" onKeyDown={onKeyDown}>
+      <div className="flex items-center justify-center">
+        <p
           role="button"
-          fontSize="sm"
-          width="21px"
-          textAlign="center"
-          onClick={onDateChange}
-          opacity={isSameMonth(date, new Date(currentDate)) ? 1 : 0.5}
-          {...(isSelected && {
-            bg: "red.500",
-            color: "white",
-            rounded: "full",
-          })}>
+          className={cn(
+            "text-sm w-[21px] text-center",
+            isSelected && "bg-red-500 text-white rounded-full",
+            isSameMonth(date, new Date(currentDate)) ? "opacity-100" : "opacity-50"
+          )}
+          onClick={onDateChange}>
           {date.getDate()}
-        </Text>
-      </Flex>
-    </Box>
+        </p>
+      </div>
+    </td>
   )
 }
 

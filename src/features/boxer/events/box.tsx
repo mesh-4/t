@@ -1,9 +1,8 @@
 import * as React from "react"
 import { format, isSameHour } from "date-fns"
-import { Box, Flex, Text } from "@chakra-ui/react"
 
 import { useStore } from "@/store"
-import { getYByTime } from "@/utils"
+import { cn, getYByTime } from "@/utils"
 import type { Event } from "@/api/event"
 
 type EventBoxProps = {
@@ -55,25 +54,19 @@ function EventBox({ idx, data, listData = [] }: EventBoxProps) {
   }
 
   return (
-    <Box
-      overflow="hidden"
-      rounded="md"
-      bg="rgba(49, 130, 206, 0.5)"
-      pos="absolute"
-      inset={`${startPoint}px 0% -${endPoint}px ${left}%`}
-      zIndex={idx + 1}>
-      <Flex pos="relative" px={1} height="100%" flexDir="column">
-        <Flex flex="auto" flexDir={endPoint - startPoint > 25 ? "column" : "row"} w="100%" h="100%">
-          <Text fontSize="sm" mr={2} lineHeight="20px">
+    <div
+      className=" overflow-hidden rounded-md bg-blue-400/50 absolute"
+      style={{ inset: `${startPoint}px 0% -${endPoint}px ${left}%`, zIndex: idx + 1 }}>
+      <div className="relative flex flex-col px-1 h-full">
+        <div className={cn("flex flex-auto w-full h-full", endPoint - startPoint > 25 ? "flex-col" : "flex-row")}>
+          <p className="text-sm leading-[20px] mr-2">
             {format(new Date(data.start), "HH:mm")} ~ {format(new Date(data.end), "HH:mm")}
-          </Text>
-          <Text fontSize="sm" lineHeight="20px">
-            {data.title}
-          </Text>
-        </Flex>
-        <Box pos="absolute" bottom={0} w="100%" h="8px" cursor="row-resize" onMouseDown={onMouseDown} />
-      </Flex>
-    </Box>
+          </p>
+          <p className="text-sm leading-[20px]">{data.title}</p>
+        </div>
+        <div className="absolute bottom-0 w-full h-2 cursor-row-resize" onMouseDown={onMouseDown} />
+      </div>
+    </div>
   )
 }
 

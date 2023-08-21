@@ -1,8 +1,11 @@
+"use client"
+
 import * as React from "react"
 import { useQueryClient } from "@tanstack/react-query"
-import { Input, InputGroup, InputRightElement, Button } from "@chakra-ui/react"
 
 import { useCreateEvent } from "@/hooks/events/mutations"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 
 function EventCreator() {
   const inputRef = React.useRef<HTMLInputElement>(null)
@@ -49,20 +52,14 @@ function EventCreator() {
   }
 
   return (
-    <InputGroup w="full">
-      <Input
-        ref={inputRef}
-        w="full"
-        placeholder="Enter event title"
-        onKeyPress={onKeyPress}
-        focusBorderColor="teal.500"
-      />
-      <InputRightElement width="5rem">
+    <div className="w-full flex items-center">
+      <Input ref={inputRef} className="w-full flex-grow" placeholder="Enter event title" onKeyPress={onKeyPress} />
+      <div className="w-[80px]">
         <Button size="sm" variant="ghost" onClick={handleCreate}>
           Create
         </Button>
-      </InputRightElement>
-    </InputGroup>
+      </div>
+    </div>
   )
 }
 

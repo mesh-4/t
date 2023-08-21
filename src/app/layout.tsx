@@ -6,6 +6,8 @@ import IntlProvider from "@/locales/client/provider"
 
 import RootProvider from "./provider"
 
+import "./globals.css"
+
 export async function generateMetadata(): Promise<Metadata> {
   // const intl = await useIntl()
 

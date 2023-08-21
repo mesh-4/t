@@ -1,5 +1,4 @@
 import * as React from "react"
-import { Box, Text } from "@chakra-ui/react"
 
 import { useStore } from "@/store"
 import { getClosetSlotByY } from "@/utils"
@@ -14,21 +13,13 @@ function EventPlaceholder() {
   }
 
   return (
-    <Box
-      pos="absolute"
-      left="60px"
-      top={`${Math.min(startY, endY)}px`}
-      w="calc(100% - 60px)"
-      h={`${Math.abs(endY - startY)}px`}
-      bg="rgba(72, 187, 120, 0.5)"
-      rounded="md"
-      zIndex="9999"
-      overflow="hidden"
-      pointerEvents="none">
-      <Text px={1} fontSize="sm">
+    <div
+      className="absolute left-[60px] w-[calc(100%-60px)] rounded-md bg-green-500/50 z-[9999] overflow-hidden pointer-events-none"
+      style={{ top: `${Math.min(startY, endY)}px`, height: `${Math.abs(endY - startY)}px` }}>
+      <p className="px-1 text-sm">
         {getClosetSlotByY(Math.min(startY, endY))} ~ {getClosetSlotByY(Math.max(startY, endY))}
-      </Text>
-    </Box>
+      </p>
+    </div>
   )
 }
 

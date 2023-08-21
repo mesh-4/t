@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { format, eachDayOfInterval, startOfWeek, endOfWeek } from "date-fns"
-import { Box, Flex, Text } from "@chakra-ui/react"
 
 import CalendarHeader from "./header"
 import CalendarMonth from "./month"
@@ -12,29 +11,27 @@ function CalendarWeek() {
   const weekDays = eachDayOfInterval({ start: weekStart, end: endOfWeek(weekStart) })
 
   return (
-    <Box as="thead">
-      <Flex as="tr" w="full" alignItems="center" aria-hidden="true" mb={2}>
+    <thead>
+      <tr className="mb-2 flex w-full items-center" aria-hidden="true">
         {weekDays.map((day) => (
-          <Box key={day.toString()} as="th" flex="1" textAlign="center">
-            <Text fontSize="sm" fontWeight={700}>
-              {format(day, "EEE")}
-            </Text>
-          </Box>
+          <th key={day.toString()} className="flex-1 text-center">
+            <p className="text-sm font-semibold">{format(day, "EEE")}</p>
+          </th>
         ))}
-      </Flex>
-    </Box>
+      </tr>
+    </thead>
   )
 }
 
 function Calendar() {
   return (
-    <Flex flexDir="column">
+    <div className="flex flex-col">
       <CalendarHeader />
-      <Box as="table" role="grid">
+      <table role="grid">
         <CalendarWeek />
         <CalendarMonth />
-      </Box>
-    </Flex>
+      </table>
+    </div>
   )
 }
 

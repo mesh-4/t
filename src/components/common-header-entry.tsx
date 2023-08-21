@@ -1,7 +1,10 @@
 "use client"
+
+import * as React from "react"
 import { useRouter } from "next/navigation"
 import { signIn } from "next-auth/react"
-import { Button } from "@chakra-ui/react"
+
+import { Button } from "@/components/ui/button"
 
 type CommonHeaderEntryProps = {
   isAuth?: boolean

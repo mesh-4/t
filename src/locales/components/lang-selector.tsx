@@ -2,13 +2,14 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import { Select } from "@radix-ui/themes"
+
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 type LangSelectorProps = {
   defaultValue?: string
-} & React.ComponentPropsWithoutRef<typeof Select.Trigger>
+} & React.ComponentPropsWithoutRef<typeof SelectTrigger>
 
-const LangSelector = ({ defaultValue = "en", ...triggerProps }: LangSelectorProps) => {
+function LangSelector({ defaultValue = "en", ...triggerProps }: LangSelectorProps) {
   const router = useRouter()
 
   const onChange = React.useCallback((value: string) => {
@@ -17,16 +18,20 @@ const LangSelector = ({ defaultValue = "en", ...triggerProps }: LangSelectorProp
   }, [])
 
   return (
-    <Select.Root defaultValue={defaultValue} onValueChange={onChange}>
-      <Select.Trigger placeholder="Lang" />
-      <Select.Content>
-        <Select.Group>
-          <Select.Item value="en">English</Select.Item>
-          <Select.Item value="zh-TW">繁體中文</Select.Item>
-        </Select.Group>
-      </Select.Content>
-    </Select.Root>
+    <>
+      <Select defaultValue={defaultValue} onValueChange={onChange}>
+        <SelectTrigger {...triggerProps}>
+          <SelectValue placeholder="Lang" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="en">English</SelectItem>
+          <SelectItem value="zh-TW">繁體中文</SelectItem>
+        </SelectContent>
+      </Select>
+    </>
   )
 }
+
+LangSelector.displayName = "LangSelector"
 
 export default LangSelector

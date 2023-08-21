@@ -1,26 +1,29 @@
 import * as React from "react"
-import { Box, Flex, Text, useColorModeValue } from "@chakra-ui/react"
 import { ListChildComponentProps, areEqual } from "react-window"
 
-function TimelineSlot({ data, index, style }: ListChildComponentProps<string[]>) {
-  const borderColor = useColorModeValue("gray.300", "gray.700")
+import { cn } from "@/utils"
 
+function TimelineSlot({ data, index, style }: ListChildComponentProps<string[]>) {
   const label = data[index]
   const [hour, minutes] = label.split(":")
   const startOfHour = minutes === "00"
 
   return (
     <div style={style}>
-      <Flex w="100%" h="100%" pt={index === 0 ? 2 : 0} userSelect="none">
-        <Box flex="none" w="60px" pos="relative">
+      <div className={cn("flex w-full h-full select-none", index === 0 ? "pt-2" : "pt-0")}>
+        <div className="flex-none w-[60px] relative">
           {startOfHour && (
-            <Text fontSize="sm" lineHeight="none" transform="translateY(-50%)">
-              {hour.toString().padStart(2, "0")}:00
-            </Text>
+            <p className="text-sm leading-none -translate-y-1/2">{hour.toString().padStart(2, "0")}:00</p>
           )}
-        </Box>
-        <Box flex="auto" w="100%" id={label} borderTop={startOfHour ? "2px" : "1px"} borderColor={borderColor} />
-      </Flex>
+        </div>
+        <div
+          id={label}
+          className={cn(
+            "flex-auto w-full border-gray-300 dark:border-gray-700",
+            startOfHour ? "border-t-2" : "border-t-[1px]"
+          )}
+        />
+      </div>
     </div>
   )
 }
