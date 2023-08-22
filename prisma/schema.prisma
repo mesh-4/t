@@ -62,13 +62,18 @@ model Event {
   updatedAt     DateTime   @updatedAt
   title         String
   note          String?
-  start         DateTime
-  end           DateTime
+  start         DateTime?
+  end           DateTime?
 
   parentId      String?
   parentEvent   Event?    @relation("ParentSubEvent", fields: [parentId], references: [id])
   subEvents     Event[]   @relation("ParentSubEvent")
 
-  user       User       @relation(fields: [userId], references: [id])
-  userId     String
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+
+  @@index([userId])
+  @@index([parentId])
+  @@index([userId, start])
+  @@index([userId, createdAt(sort: Desc)])
 }
