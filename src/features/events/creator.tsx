@@ -7,10 +7,10 @@ import { cn } from "@/utils"
 import { useCreateEvent } from "@/hooks/events/mutations"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { Editor } from "@/components/ui/editor"
 
 function EventCreator() {
   const inputRef = React.useRef<HTMLInputElement>(null)
-  const [isTyping, setTyping] = React.useState(false)
 
   const queryClient = useQueryClient()
   const { mutate: createEvent } = useCreateEvent()
@@ -30,10 +30,6 @@ function EventCreator() {
       }
     )
     inputRef.current.value = ""
-  }
-
-  const onFocusTitle = () => {
-    setTyping(true)
   }
 
   const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -61,25 +57,15 @@ function EventCreator() {
     <div className={cn("w-full transition-all")}>
       <Input
         ref={inputRef}
-        className="w-full flex-grow"
-        onFocus={onFocusTitle}
+        name="title"
+        variant="immerse"
+        className="w-full flex-grow text-2xl font-bold"
         placeholder="Enter event title"
         onKeyPress={onKeyPress}
       />
 
       <div className="w-full">
-        <div>
-          <Input />
-        </div>
-
-        <div className="flex items-end space-x-2">
-          <Button size="sm" variant="ghost" onClick={() => setTyping(false)}>
-            Cancel
-          </Button>
-          <Button size="sm" variant="ghost" onClick={handleCreate}>
-            Create
-          </Button>
-        </div>
+        <Editor />
       </div>
     </div>
   )

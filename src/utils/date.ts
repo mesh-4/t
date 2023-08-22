@@ -44,3 +44,16 @@ export function getClosetSlotByTime(time: number | string) {
   const y = getYByTime(time)
   return getClosetSlotByY(y)
 }
+
+export function getTimezoneOffsetHour() {
+  const hours = new Date().getTimezoneOffset() / 60
+  return -1 * hours
+}
+
+export function getDateWithOffset(input: string, offset?: number): Date {
+  const date = new Date(input)
+  if (offset) {
+    date.setDate(date.getDate() + offset)
+  }
+  return date
+}

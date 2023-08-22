@@ -11,7 +11,7 @@ function Profile() {
   }
 
   return (
-    <div className="pl-3 py-2 relative select-none">
+    <div className="py-2 relative select-none">
       <p className="text-sm leading-[1]">{session.user.name}</p>
       <p className="text-xs leading-[1.15]">{session.user.email}</p>
     </div>

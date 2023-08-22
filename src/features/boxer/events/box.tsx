@@ -55,7 +55,7 @@ function EventBox({ idx, data, listData = [] }: EventBoxProps) {
 
   return (
     <div
-      className=" overflow-hidden rounded-sm bg-blue-400/50 absolute"
+      className="overflow-hidden rounded-sm bg-blue-400/50 absolute"
       style={{ inset: `${startPoint}px 0% -${endPoint}px ${left}%`, zIndex: idx + 1 }}>
       <div className="relative flex flex-col px-1 h-full">
         <div className={cn("flex flex-auto w-full h-full", endPoint - startPoint > 25 ? "flex-col" : "flex-row")}>

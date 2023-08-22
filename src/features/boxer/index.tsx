@@ -1,9 +1,4 @@
-"use client"
-
-import * as React from "react"
-import { isSameDay } from "date-fns"
-
-import { useStore } from "@/store"
+import DisplayToday from "@/features/date/display-today"
 
 import BoxerTimeline from "./timeline"
 import EventsLayer from "./events/layer"
@@ -15,11 +10,11 @@ type BoxerProps = {
 }
 
 function Boxer({ layerClassName }: BoxerProps) {
-  const date = useStore((state) => state.date)
-
   return (
     <EventsLayer className={layerClassName}>
-      {isSameDay(new Date(date), new Date()) && <CurrentTimeIndicator />}
+      <DisplayToday>
+        <CurrentTimeIndicator />
+      </DisplayToday>
       <BoxerTimeline />
       <EventPlaceholder />
     </EventsLayer>
@@ -28,4 +23,4 @@ function Boxer({ layerClassName }: BoxerProps) {
 
 Boxer.displayName = "Boxer"
 
-export default React.memo(Boxer)
+export default Boxer

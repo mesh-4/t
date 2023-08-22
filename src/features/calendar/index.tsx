@@ -26,7 +26,7 @@ function CalendarWeek() {
 function Calendar() {
   return (
     <div className="flex flex-col">
-      <div className="pl-3 mb-2">
+      <div className="px-3 mb-2">
         <CalendarHeader />
       </div>
       <table role="grid">

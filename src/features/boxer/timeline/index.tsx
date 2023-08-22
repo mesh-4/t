@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 import AutoSizer from "react-virtualized-auto-sizer"
 import { VariableSizeList as List } from "react-window"

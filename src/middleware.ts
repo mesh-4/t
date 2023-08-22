@@ -13,7 +13,7 @@ export const middleware = async (request: NextRequest) => {
     })
 
     if (!session) {
-      return NextResponse.redirect("/auth/signin")
+      return NextResponse.redirect("/login")
     }
   }
 

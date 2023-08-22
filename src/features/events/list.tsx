@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 import flatten from "lodash/flatten"
 import AutoSizer from "react-virtualized-auto-sizer"
@@ -36,7 +38,7 @@ function EventsList() {
               ref={ref}
               width={width}
               height={height}
-              itemSize={45}
+              itemSize={64}
               itemData={flattenEvents}
               itemCount={flattenEvents.length}
               onItemsRendered={onItemsRendered}>

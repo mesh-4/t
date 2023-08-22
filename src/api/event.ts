@@ -1,6 +1,6 @@
 import { fetcher } from "@/libs/fetcher"
 
-import type { ReadEventsQuery, CreateEventInput, UpdateEventInput } from "@/types"
+import type { ReadEventParamsType, CreateEventPayloadType, UpdateEventPayloadType } from "@/features/events/schema"
 
 export type Event = {
   id: string
@@ -15,12 +15,12 @@ export type CreateEventResponse = {
   data: Event
 }
 
-export const createEvent = async (data: CreateEventInput) => {
+export const createEvent = async (data: CreateEventPayloadType) => {
   const res = await fetcher.post<CreateEventResponse>("/events", data)
   return res.data
 }
 
-export const updateEvent = async (id: Event["id"], data: UpdateEventInput) => {
+export const updateEvent = async (id: Event["id"], data: UpdateEventPayloadType) => {
   const res = await fetcher.post<Event>(`/events/${id}`, data)
   return res.data
 }
@@ -41,7 +41,7 @@ export type EventsResponse = {
   hasNextPage: boolean
 }
 
-export const getEvents = async (query: ReadEventsQuery) => {
+export const getEvents = async (query: ReadEventParamsType) => {
   const res = await fetcher.get<EventsResponse>("/events", {
     params: query,
   })

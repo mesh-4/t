@@ -13,7 +13,7 @@ const GET: NextApiHandler = async (req, res) => {
     throw new createHttpError.Unauthorized()
   }
 
-  const { page = "0", limit = "20", date, order = "asc", orderBy = "createdAt" } = ReadEventParams.parse(req.query)
+  const { page = "0", limit = "20", date, order = "desc", orderBy = "createdAt" } = ReadEventParams.parse(req.query)
 
   const data = await prisma.event.findMany({
     where: {
