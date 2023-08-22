@@ -11,10 +11,8 @@ function TimelineSlot({ data, index, style }: ListChildComponentProps<string[]>)
   return (
     <div style={style}>
       <div className={cn("flex w-full h-full select-none", index === 0 ? "pt-2" : "pt-0")}>
-        <div className="flex-none w-[60px] relative">
-          {startOfHour && (
-            <p className="text-sm leading-none -translate-y-1/2">{hour.toString().padStart(2, "0")}:00</p>
-          )}
+        <div className={cn("flex-none relative", startOfHour ? "w-[30px]" : "w-[35px]")}>
+          {startOfHour && <p className="text-sm leading-none -translate-y-1/2">{hour.toString().padStart(2, "0")}</p>}
         </div>
         <div
           id={label}

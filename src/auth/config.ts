@@ -13,7 +13,16 @@ const AUTH_OPTIONS: NextAuthOptions = {
       clientSecret: process.env.GITHUB_SECRET,
     }),
   ],
+  pages: {
+    error: "/login",
+  },
   callbacks: {
+    signIn: async ({ user, account, profile }) => {
+      if (!user.email) {
+        return false
+      }
+      return true
+    },
     session: async ({ session, token }) => {
       return {
         ...session,

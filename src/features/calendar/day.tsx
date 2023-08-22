@@ -44,7 +44,7 @@ function CalendarDay({ date }: CalendarDayProps) {
           role="button"
           className={cn(
             "text-sm w-[21px] text-center",
-            isSelected && "bg-red-500 text-white rounded-full",
+            isSelected && "bg-red-500 text-white",
             isSameMonth(date, new Date(currentDate)) ? "opacity-100" : "opacity-50"
           )}
           onClick={onDateChange}>

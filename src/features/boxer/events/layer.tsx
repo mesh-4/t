@@ -7,7 +7,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useStore } from "@/store"
 import { TIMELINE_ID } from "@/constants"
 import { useCallbackRef } from "@/hooks/use-callback-ref"
-import { prefixWith, getClosetSlotByY, getYByTime } from "@/utils"
+import { cn, prefixWith, getClosetSlotByY, getYByTime } from "@/utils"
 
 import { useCreateEvent, useUpdateEvent } from "@/hooks/events/mutations"
 
@@ -15,10 +15,11 @@ import EventDay from "./day"
 import EventsCreateLayer from "./create-layer"
 
 type EventLayerProps = {
+  className?: string
   children?: React.ReactNode
 }
 
-function EventsLayer({ children }: EventLayerProps) {
+function EventsLayer({ className, children }: EventLayerProps) {
   const date = useStore((state) => state.date)
 
   const layerTarget = useStore((state) => state.layer.target)
@@ -190,7 +191,7 @@ function EventsLayer({ children }: EventLayerProps) {
     <div
       id={TIMELINE_ID}
       ref={timelineRef}
-      className="w-full h-full relative overflow-y-scroll"
+      className={cn("w-full h-full relative overflow-y-scroll", className)}
       onMouseUp={onMouseUp}
       onMouseMove={onMouseMove}>
       <div className="relative w-full">

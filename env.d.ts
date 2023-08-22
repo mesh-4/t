@@ -4,5 +4,8 @@ declare namespace NodeJS {
     GITHUB_SECRET: string
 
     NEXT_PUBLIC_URL: string
+
+    NEXTAUTH_URL: string
+    NEXTAUTH_SECRET: string
   }
 }

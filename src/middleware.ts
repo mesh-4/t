@@ -1,11 +1,21 @@
-import type { NextRequest } from "next/server"
+import { getToken } from "next-auth/jwt"
+import { NextRequest, NextResponse } from "next/server"
 
 import { localeMiddleware } from "@/locales/middleware"
 
-export const middleware = (request: NextRequest) => {
+export const middleware = async (request: NextRequest) => {
   const response = localeMiddleware({ request })
 
-  console.log(request.nextUrl.pathname)
+  if (request.nextUrl.pathname.startsWith("/app")) {
+    const session = await getToken({
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET,
+    })
+
+    if (!session) {
+      return NextResponse.redirect("/auth/signin")
+    }
+  }
 
   return response
 }

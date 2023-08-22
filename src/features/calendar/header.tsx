@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 import { format } from "date-fns"
 
@@ -7,7 +9,7 @@ function CalendarHeader() {
   const date = useStore((state) => state.date)
 
   return (
-    <div className="mb-2 pl-3">
+    <div>
       <p className=" font-semibold">{format(new Date(date), "yyyy MMMM")}</p>
     </div>
   )

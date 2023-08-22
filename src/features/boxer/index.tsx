@@ -10,11 +10,15 @@ import EventsLayer from "./events/layer"
 import EventPlaceholder from "./events/placeholder"
 import CurrentTimeIndicator from "./indicator/current-time"
 
-function Boxer() {
+type BoxerProps = {
+  layerClassName?: string
+}
+
+function Boxer({ layerClassName }: BoxerProps) {
   const date = useStore((state) => state.date)
 
   return (
-    <EventsLayer>
+    <EventsLayer className={layerClassName}>
       {isSameDay(new Date(date), new Date()) && <CurrentTimeIndicator />}
       <BoxerTimeline />
       <EventPlaceholder />
