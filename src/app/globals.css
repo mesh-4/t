@@ -83,3 +83,9 @@
 .scrollbar-hidden::-webkit-scrollbar {
   display: none;
 }
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: var(--muted-foreground);
+  position: absolute;
+}

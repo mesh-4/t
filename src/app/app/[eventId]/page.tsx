@@ -22,11 +22,11 @@ export default async function EventEdit({ params }: { params: EventParams }) {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col h-full">
       <div className="flex-none flex w-full h-12 px-3 items-center border-b justify-end">
         <EventDeleteButton eventId={event.id} />
       </div>
-      <div className="flex-auto h-full p-2">
+      <div className="flex-1 h-full overflow-hidden p-2">
         <EventEditor
           data={{
             ...event,

@@ -1,5 +1,3 @@
-import DisplayToday from "@/features/date/display-today"
-
 import BoxerTimeline from "./timeline"
 import EventsLayer from "./events/layer"
 import EventPlaceholder from "./events/placeholder"
@@ -12,9 +10,7 @@ type BoxerProps = {
 function Boxer({ layerClassName }: BoxerProps) {
   return (
     <EventsLayer className={layerClassName}>
-      <DisplayToday>
-        <CurrentTimeIndicator />
-      </DisplayToday>
+      <CurrentTimeIndicator />
       <BoxerTimeline />
       <EventPlaceholder />
     </EventsLayer>

@@ -4,7 +4,6 @@ import * as React from "react"
 import debounce from "lodash/debounce"
 import { useQueryClient } from "@tanstack/react-query"
 import { UpdateIcon } from "@radix-ui/react-icons"
-import type { Descendant } from "slate"
 
 import { cn } from "@/utils"
 import { Input } from "@/components/ui/input"
@@ -57,13 +56,12 @@ function EventEditor({ data }: EventEditorProps) {
     return debounce(onNoteSave, 500)
   }, [onNoteSave])
 
-  const onNoteChange = (val: Descendant[]) => {
-    const newNote = JSON.stringify(val)
+  const onNoteChange = (newNote: string) => {
     debouncedSaveNote(newNote)
   }
 
   return (
-    <div className="w-full relative">
+    <div className="w-full h-full flex flex-col relative">
       <div
         className={cn("absolute top-0 right-0 opacity-0 transition-opacity", {
           "opacity-100 animate-spin": status === "loading",
@@ -76,11 +74,11 @@ function EventEditor({ data }: EventEditorProps) {
         variant="immerse"
         defaultValue={data.title || ""}
         onChange={onTitleChange}
-        className="w-full flex-grow text-2xl font-bold"
+        className="w-full flex-none text-2xl font-bold mb-6"
         placeholder="Enter event title"
       />
 
-      <div className="w-full">
+      <div className="w-full flex-1 px-3 overflow-y-scroll scrollbar-hidden">
         <Editor initialVal={data.note || undefined} onChange={onNoteChange} />
       </div>
     </div>

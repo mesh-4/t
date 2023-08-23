@@ -38,7 +38,8 @@ function EventsListRow({ index, style, data }: ListChildComponentProps<Event[]>)
     },
     {
       enabled: isSelected,
-    }
+    },
+    [data, index, pathname]
   )
 
   const onClick = () => {

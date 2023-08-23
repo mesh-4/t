@@ -11,7 +11,10 @@ import { useInfiniteEvents } from "@/hooks/events/queries"
 import EventsListRow from "./list-row"
 
 function EventsList() {
-  const { data, fetchNextPage, hasNextPage } = useInfiniteEvents()
+  const { data, fetchNextPage, hasNextPage } = useInfiniteEvents({
+    order: "desc",
+    orderBy: "updatedAt",
+  })
 
   const flattenEvents = React.useMemo(() => {
     if (!data) return []

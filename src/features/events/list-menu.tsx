@@ -33,7 +33,7 @@ function EventsListMenu({ children }: EventsListMenuProps) {
     return id
   }, [pathname])
 
-  const handleCreate = () => {
+  const handleCreateEvent = () => {
     createEvent(
       { title: "New Event", note: EDITOR_EMPTY_VALUE },
       {
@@ -47,7 +47,22 @@ function EventsListMenu({ children }: EventsListMenuProps) {
     )
   }
 
-  const handleDelete = () => {
+  const handleCreateSubEvent = () => {
+    if (!currentEventId) return
+    createEvent(
+      { title: "New Sub Event", note: EDITOR_EMPTY_VALUE, parentId: currentEventId },
+      {
+        onSuccess: async (result) => {
+          await queryClient.invalidateQueries({
+            queryKey: ["events"],
+          })
+          router.push(`/app/${result.data.id}`)
+        },
+      }
+    )
+  }
+
+  const handleDeleteEvent = () => {
     if (!currentEventId) return
     deleteEvent(currentEventId, {
       onSuccess: async () => {
@@ -63,12 +78,13 @@ function EventsListMenu({ children }: EventsListMenuProps) {
     <ContextMenu>
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
       <ContextMenuContent>
-        <ContextMenuItem onClick={handleCreate}>Create event</ContextMenuItem>
+        <ContextMenuItem onClick={handleCreateEvent}>Create event</ContextMenuItem>
         {currentEventId && (
           <>
             <ContextMenuSeparator />
             <ContextMenuLabel>Current event</ContextMenuLabel>
-            <ContextMenuItem onClick={handleDelete}>Delete event</ContextMenuItem>
+            <ContextMenuItem onClick={handleCreateSubEvent}>Create sub event</ContextMenuItem>
+            <ContextMenuItem onClick={handleDeleteEvent}>Delete event</ContextMenuItem>
           </>
         )}
       </ContextMenuContent>

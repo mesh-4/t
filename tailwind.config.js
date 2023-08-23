@@ -65,6 +65,29 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            lineHeight: "1.5",
+            p: {
+              marginTop: "0",
+              marginBottom: "0",
+            },
+            ol: {
+              marginTop: "0.5rem",
+              marginBottom: "0.5rem",
+            },
+            ul: {
+              marginTop: "0.5rem",
+              marginBottom: "0.5rem",
+            },
+            blockquote: {
+              marginTop: "0.75rem",
+              marginBottom: "0.75rem",
+            },
+          },
+        },
+      },
     },
   },
   plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],

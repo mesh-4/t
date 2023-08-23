@@ -1,16 +1,24 @@
 "use client"
 
 import * as React from "react"
+import { isSameDay } from "date-fns"
 
 import { getYByTime } from "@/utils"
+import { useStore } from "@/store"
 
 function CurrentTimeIndicator() {
+  const focusDate = useStore((state) => state.date)
   const rAF = React.useRef<number>(0)
   const indicatorRef = React.useRef<HTMLDivElement>(null)
 
   React.useEffect(() => {
     const tick = () => {
       if (indicatorRef.current) {
+        if (!isSameDay(new Date(focusDate), new Date())) {
+          indicatorRef.current.style.display = "none"
+          return
+        }
+
         indicatorRef.current.style.display = "flex"
         indicatorRef.current.style.top = `${getYByTime(Date.now()) + 8}px`
       }
@@ -22,7 +30,7 @@ function CurrentTimeIndicator() {
     return () => {
       cancelAnimationFrame(rAF.current)
     }
-  }, [])
+  }, [focusDate])
 
   return (
     <div
