@@ -4,22 +4,28 @@ import { Editable, ReactEditor, Slate, withReact, RenderElementProps } from "sla
 import { createEditor, Editor as SlateEditor, Element as SlateElement, Node as SlateNode, Descendant } from "slate"
 
 import EditorElement from "./element"
+import { EDITOR_EMPTY_VALUE } from "./constants"
 import { withShortcuts, SHORTCUTS } from "./plugins/shortcuts"
 
-const INITIAL_VALUE: Descendant[] = [
-  {
-    type: "paragraph",
-    children: [
-      {
-        text: "",
-      },
-    ],
-  },
-]
+export type EditorChangeHandler = (value: Descendant[]) => void
 
-export function Editor() {
-  const renderElement = React.useCallback((props: RenderElementProps) => <EditorElement {...props} />, [])
-  const editor = React.useMemo(() => withShortcuts(withReact(withHistory(createEditor()))), [])
+type EditorProps = {
+  initialVal?: string | null
+  onChange?: EditorChangeHandler
+}
+
+export function Editor({ initialVal, onChange }: EditorProps) {
+  const renderElement = React.useCallback((props: RenderElementProps) => {
+    return <EditorElement {...props} />
+  }, [])
+
+  const editor = React.useMemo(() => {
+    return withShortcuts(withReact(withHistory(createEditor())))
+  }, [])
+
+  const initialValue = React.useMemo(() => {
+    return JSON.parse(initialVal || EDITOR_EMPTY_VALUE) as Descendant[]
+  }, [initialVal])
 
   const handleDOMBeforeInput = React.useCallback(
     (e: InputEvent) => {
@@ -57,8 +63,18 @@ export function Editor() {
     [editor]
   )
 
+  const onEditorChange = React.useCallback(
+    (val: Descendant[]) => {
+      const isAstChange = editor.operations.some((op) => "set_selection" !== op.type)
+      if (isAstChange) {
+        onChange?.(val)
+      }
+    },
+    [editor, onChange]
+  )
+
   return (
-    <Slate editor={editor} initialValue={INITIAL_VALUE}>
+    <Slate editor={editor} initialValue={initialValue} onChange={onEditorChange}>
       <Editable
         className="outline-none px-3 prose prose-stone dark:prose-invert porse-p:m-0"
         onDOMBeforeInput={handleDOMBeforeInput}

@@ -4,11 +4,12 @@ import type { ReadEventParamsType, CreateEventPayloadType, UpdateEventPayloadTyp
 
 export type Event = {
   id: string
-  title: string
-  start: number
-  end: number
   createdAt: string
   updatedAt: string
+  title: string
+  note: string | null
+  start?: string | null
+  end?: string | null
 }
 
 export type CreateEventResponse = {
@@ -21,7 +22,7 @@ export const createEvent = async (data: CreateEventPayloadType) => {
 }
 
 export const updateEvent = async (id: Event["id"], data: UpdateEventPayloadType) => {
-  const res = await fetcher.post<Event>(`/events/${id}`, data)
+  const res = await fetcher.put<Event>(`/events/${id}`, data)
   return res.data
 }
 

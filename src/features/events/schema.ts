@@ -11,11 +11,16 @@ export const ReadEventParams = z.object({
 })
 export type ReadEventParamsType = z.infer<typeof ReadEventParams>
 
-export const CreateEventPayload = z.object({
+export const CreateEventInput = z.object({
   title: z.string(),
   note: z.string().optional(),
   start: z.string().optional(),
   end: z.string().optional(),
+})
+
+export const CreateEventPayload = CreateEventInput.extend({
+  parentId: z.string().optional(),
+  subEvents: CreateEventInput.array().optional(),
 })
 export type CreateEventPayloadType = z.infer<typeof CreateEventPayload>
 
@@ -24,5 +29,6 @@ export const UpdateEventPayload = z.object({
   note: z.string().optional(),
   start: z.string().optional(),
   end: z.string().optional(),
+  parentId: z.string().optional(),
 })
 export type UpdateEventPayloadType = z.infer<typeof UpdateEventPayload>

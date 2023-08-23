@@ -5,7 +5,7 @@ import { useTheme } from "next-themes"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-function ColorModeBtn() {
+function ColorModeSelector() {
   const [mounted, setMounted] = React.useState(false)
   const { theme, setTheme } = useTheme()
 
@@ -28,6 +28,6 @@ function ColorModeBtn() {
   )
 }
 
-ColorModeBtn.displayName = "ColorModeBtn"
+ColorModeSelector.displayName = "ColorModeSelector"
 
-export default React.memo(ColorModeBtn)
+export default React.memo(ColorModeSelector)

@@ -68,6 +68,13 @@ const POST: NextApiHandler = async (req, res) => {
           id: user.id,
         },
       },
+      ...(input.parentId && {
+        parentEvent: {
+          connect: {
+            id: input.parentId,
+          },
+        },
+      }),
     },
   })
 

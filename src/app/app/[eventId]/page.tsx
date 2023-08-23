@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation"
 
+import EventEditor from "@/features/events/editor"
+import EventDeleteButton from "@/features/events/delete-button"
 import { useSessionUser } from "@/auth/get-session-user"
 
 import { getEventById } from "./models"
@@ -8,7 +10,7 @@ type EventParams = {
   eventId: string
 }
 
-export default async function EventEditor({ params }: { params: EventParams }) {
+export default async function EventEdit({ params }: { params: EventParams }) {
   const user = await useSessionUser()
   if (!user) {
     notFound()
@@ -20,9 +22,21 @@ export default async function EventEditor({ params }: { params: EventParams }) {
   }
 
   return (
-    <div>
-      <p> {event.id}</p>
-      <p> {event.title}</p>
+    <div className="flex flex-col">
+      <div className="flex-none flex w-full h-12 px-3 items-center border-b justify-end">
+        <EventDeleteButton eventId={event.id} />
+      </div>
+      <div className="flex-auto h-full p-2">
+        <EventEditor
+          data={{
+            ...event,
+            createdAt: event.createdAt.toISOString(),
+            updatedAt: event.updatedAt.toISOString(),
+            start: event.start?.toISOString(),
+            end: event.end?.toISOString(),
+          }}
+        />
+      </div>
     </div>
   )
 }
