@@ -1,17 +1,21 @@
 import * as React from "react"
-import { format, isSameHour } from "date-fns"
+import { format } from "date-fns"
+import { useRouter } from "next/navigation"
 
 import { useStore } from "@/store"
 import { cn, getYByTime } from "@/utils"
-import type { Event } from "@/api/event"
+import type { Event, DateRange } from "@/api/event"
 
 type EventBoxProps = {
   idx: number
-  data: Event
-  listData?: Event[]
+  data: Event & DateRange
+  left?: string
+  listData?: (Event & DateRange)[]
 }
 
-function EventBox({ idx, data, listData = [] }: EventBoxProps) {
+function EventBox({ idx, left = "0%", data, listData = [] }: EventBoxProps) {
+  const router = useRouter()
+
   const endY = useStore((state) => state.pointer.end)
   const layerTarget = useStore((state) => state.layer.target)
 
@@ -20,11 +24,6 @@ function EventBox({ idx, data, listData = [] }: EventBoxProps) {
 
   const [startPoint, setStartPoint] = React.useState(getYByTime(data.start))
   const [endPoint, setEndPoint] = React.useState(getYByTime(data.end))
-
-  const left = React.useMemo(() => {
-    const hourEvents = listData.filter((e) => isSameHour(new Date(e.start), new Date(data.start)))
-    return (100 / hourEvents.length) * hourEvents.indexOf(data)
-  }, [idx, data, listData])
 
   React.useEffect(() => {
     if (layerTarget === data.id) {
@@ -53,13 +52,21 @@ function EventBox({ idx, data, listData = [] }: EventBoxProps) {
     })
   }
 
+  const onBoxClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (e.type !== "click") return
+
+    router.push(`/app/${data.id}`)
+  }
+
   return (
     <div
       className="overflow-hidden rounded-sm bg-blue-400/50 absolute"
-      style={{ inset: `${startPoint}px 0% -${endPoint}px ${left}%`, zIndex: idx + 1 }}>
-      <div className="relative flex flex-col px-1 h-full">
+      style={{ inset: `${startPoint}px 0% -${endPoint}px ${left}`, zIndex: idx + 1 }}>
+      <div className="relative flex flex-col px-1 h-full" onClick={onBoxClick}>
         <div className={cn("flex flex-auto w-full h-full", endPoint - startPoint > 25 ? "flex-col" : "flex-row")}>
-          <p className="text-sm leading-[20px] mr-2">
+          <p className="text-sm leading-[20px] mr-2 whitespace-nowrap">
             {format(new Date(data.start), "HH:mm")} ~ {format(new Date(data.end), "HH:mm")}
           </p>
           <p className="text-sm leading-[20px]">{data.title}</p>

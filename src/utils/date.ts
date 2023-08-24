@@ -1,3 +1,4 @@
+import { format } from "date-fns"
 import { SLOT_UNIT, SLOT_LABELS, SLOTS_HEIGHT, SLOT_HEIGHT } from "@/constants"
 
 export function prefixWith(prefix: string) {
@@ -56,4 +57,17 @@ export function getDateWithOffset(input: string, offset?: number): Date {
     date.setDate(date.getDate() + offset)
   }
   return date
+}
+
+export function getDuration(start: string, end: string) {
+  return new Date(end).getTime() - new Date(start).getTime()
+}
+
+export function getTodaySlotLabels() {
+  const today = new Date()
+  const prefix = format(today, "yyyy-MM-dd")
+
+  return SLOT_LABELS.map((label) => {
+    return `${prefix} ${label}`
+  })
 }

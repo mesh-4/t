@@ -88,4 +88,5 @@
   content: attr(data-placeholder);
   color: var(--muted-foreground);
   position: absolute;
+  cursor: text;
 }

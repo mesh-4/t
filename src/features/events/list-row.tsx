@@ -50,12 +50,12 @@ function EventsListRow({ index, style, data }: ListChildComponentProps<Event[]>)
   return (
     <div
       className={cn(
-        "flex px-4 border-b items-center justify-between",
-        isSelected && "bg-accent text-accent-foreground"
+        "flex px-4 border-b items-center justify-between cursor-pointer",
+        isSelected && "bg-accent text-accent-foreground cursor-default"
       )}
       style={style}
       onClick={onClick}>
-      <div>
+      <div className=" select-none">
         <p className="w-[300px] truncate">{item.title}</p>
         <time className="text-sm text-muted-foreground">{format(new Date(item.updatedAt), "yyyy-MM-dd HH:mm")}</time>
       </div>

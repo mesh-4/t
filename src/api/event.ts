@@ -12,6 +12,11 @@ export type Event = {
   end?: string | null
 }
 
+export type DateRange = {
+  start: string
+  end: string
+}
+
 export type CreateEventResponse = {
   data: Event
 }
@@ -36,15 +41,24 @@ export const getEvent = async (id: Event["id"]) => {
   return res.data
 }
 
-export type EventsResponse = {
-  data: Event[]
+export type EventsResponse<T = Event> = {
+  data: T[]
   length: number
   hasNextPage: boolean
 }
 
-export const getEvents = async (query: ReadEventParamsType) => {
-  const res = await fetcher.get<EventsResponse>("/events", {
+export const getEvents = async <T = Event>(query: ReadEventParamsType) => {
+  const res = await fetcher.get<EventsResponse<T>>("/events", {
     params: query,
   })
+  return res.data
+}
+
+export type DateEventsResponse = {
+  data: (Event & DateRange)[]
+}
+
+export const getEventsByDate = async (date: string) => {
+  const res = await fetcher.get<DateEventsResponse>(`/events/date/${date}`)
   return res.data
 }

@@ -1,6 +1,6 @@
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query"
 
-import { getEvent, getEvents } from "@/api/event"
+import { getEvent, getEvents, getEventsByDate } from "@/api/event"
 import type { ReadEventParamsType } from "@/features/events/schema"
 
 export function useEvent(id: string) {
@@ -13,7 +13,7 @@ export function useEvent(id: string) {
 export function useEventsOfDate(date: string) {
   const { data, ...others } = useQuery({
     queryKey: ["events", { date }],
-    queryFn: () => getEvents({ date }),
+    queryFn: () => getEventsByDate(date),
   })
   const result = data?.data ?? []
   return { data: result, ...others }

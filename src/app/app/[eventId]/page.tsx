@@ -2,6 +2,7 @@ import { notFound } from "next/navigation"
 
 import EventEditor from "@/features/events/editor"
 import EventDeleteButton from "@/features/events/delete-button"
+import BackToApp from "@/features/settings/back-to-app"
 import { useSessionUser } from "@/auth/get-session-user"
 
 import { getEventById } from "./models"
@@ -23,7 +24,8 @@ export default async function EventEdit({ params }: { params: EventParams }) {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-none flex w-full h-12 px-3 items-center border-b justify-end">
+      <div className="flex-none flex w-full h-12 px-3 items-center border-b justify-between">
+        <BackToApp />
         <EventDeleteButton eventId={event.id} />
       </div>
       <div className="flex-1 h-full overflow-hidden p-2">

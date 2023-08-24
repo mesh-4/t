@@ -16,7 +16,7 @@ function EventPlaceholder() {
 
   return (
     <div
-      className="absolute left-[60px] w-[calc(100%-60px)] rounded-md bg-green-500/50 z-[9999] overflow-hidden pointer-events-none"
+      className="absolute left-[35px] w-[calc(100%-35px)] rounded-md bg-green-500/50 z-[9999] overflow-hidden pointer-events-none"
       style={{ top: `${Math.min(startY, endY)}px`, height: `${Math.abs(endY - startY)}px` }}>
       <p className="px-1 text-sm">
         {getClosetSlotByY(Math.min(startY, endY))} ~ {getClosetSlotByY(Math.max(startY, endY))}
