@@ -1,7 +1,12 @@
-fly.toml
+/node_modules
+/.pnp
+.pnp.js
+/.next/
+/out/
+/build
+.DS_Store
+*.pem
 Dockerfile
-.dockerignore
-node_modules
 npm-debug.log
 README.md
 .next
