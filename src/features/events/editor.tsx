@@ -59,10 +59,17 @@ function EventEditor({ data }: EventEditorProps) {
   }
 
   const onNoteSave = React.useCallback((input: string) => {
-    updateEvent({
-      id: data.id,
-      note: input,
-    })
+    updateEvent(
+      {
+        id: data.id,
+        note: input,
+      },
+      {
+        onSuccess: async () => {
+          await refreshQuery()
+        },
+      }
+    )
   }, [])
 
   const debouncedSaveNote = React.useMemo(() => {
