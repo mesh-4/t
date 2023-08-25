@@ -3,6 +3,7 @@
 import * as React from "react"
 import { useTheme } from "next-themes"
 import { useRouter } from "next/navigation"
+import { usePostHog } from "posthog-js/react"
 import { signOut } from "next-auth/react"
 import { SunIcon, MoonIcon, PlusIcon, ExitIcon, LaptopIcon } from "@radix-ui/react-icons"
 import { useQueryClient } from "@tanstack/react-query"
@@ -22,6 +23,7 @@ import { EDITOR_EMPTY_VALUE } from "@/components/ui/editor/constants"
 function SettingCommandMenu() {
   const [open, setOpen] = React.useState(false)
   const router = useRouter()
+  const posthog = usePostHog()
   const { setTheme } = useTheme()
   const queryClient = useQueryClient()
   const { mutate } = useCreateEvent()
@@ -39,11 +41,13 @@ function SettingCommandMenu() {
   }, [])
 
   const handleSignOut = () => {
+    posthog.capture("auth-signout")
     signOut()
     router.push("/login")
   }
 
   const handleCreateEvent = () => {
+    posthog.capture("event-create_via_cmd_menu")
     mutate(
       {
         title: "New Event",

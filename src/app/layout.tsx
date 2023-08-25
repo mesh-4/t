@@ -1,8 +1,10 @@
 import rtlDetect from "rtl-detect"
+import { Suspense } from "react"
 import type { Metadata } from "next"
 
 import { useIntl } from "@/locales/server/intl"
 import IntlProvider from "@/locales/client/provider"
+import { PHProvider, PostHogPageview } from "@/tracker/provider"
 
 import RootProvider from "./provider"
 
@@ -26,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
     ],
     openGraph: {
       type: "website",
-      siteName: "Timebox",
+      siteName: "T",
       url,
       title,
       description,
@@ -49,11 +51,16 @@ export default async function RootLayout({ children }: React.PropsWithChildren) 
 
   return (
     <html lang={intl.locale} dir={langDir} suppressHydrationWarning>
-      <body>
-        <IntlProvider locale={intl.locale} messages={intl.messages}>
-          <RootProvider>{children}</RootProvider>
-        </IntlProvider>
-      </body>
+      <Suspense>
+        <PostHogPageview />
+      </Suspense>
+      <PHProvider>
+        <body>
+          <IntlProvider locale={intl.locale} messages={intl.messages}>
+            <RootProvider>{children}</RootProvider>
+          </IntlProvider>
+        </body>
+      </PHProvider>
     </html>
   )
 }

@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { isSameDay } from "date-fns"
+import { usePostHog } from "posthog-js/react"
 import { useQueryClient } from "@tanstack/react-query"
 
 import { useStore } from "@/store"
@@ -20,6 +21,8 @@ type EventLayerProps = {
 }
 
 function EventsLayer({ className, children }: EventLayerProps) {
+  const posthog = usePostHog()
+
   const date = useStore((state) => state.date)
 
   const layerTarget = useStore((state) => state.layer.target)
@@ -60,6 +63,7 @@ function EventsLayer({ className, children }: EventLayerProps) {
     const endY = clientY + currentScroll - topEdge
 
     if (layerStatus === "creating") {
+      posthog.capture("event-create_via_timeline")
       const startY = getPointer("start")
       createEvent(
         {
@@ -78,6 +82,7 @@ function EventsLayer({ className, children }: EventLayerProps) {
     }
 
     if (layerStatus === "updating") {
+      posthog.capture("event-update_via_timeline")
       updateEvent(
         {
           id: layerTarget,

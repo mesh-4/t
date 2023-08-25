@@ -7,5 +7,8 @@ declare namespace NodeJS {
 
     NEXTAUTH_URL: string
     NEXTAUTH_SECRET: string
+
+    NEXT_PUBLIC_POSTHOG_KEY: string
+    NEXT_PUBLIC_POSTHOG_HOST: string
   }
 }

@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
+import { usePostHog } from "posthog-js/react"
 import { TrashIcon } from "@radix-ui/react-icons"
 import { useQueryClient } from "@tanstack/react-query"
 
@@ -14,10 +15,12 @@ type EventDeleteButtonProps = {
 
 function EventDeleteButton({ eventId }: EventDeleteButtonProps) {
   const router = useRouter()
+  const posthog = usePostHog()
   const queryClient = useQueryClient()
   const { mutate: deleteEvent, status } = useDeleteEvent()
 
   const onClick = () => {
+    posthog.capture("event-delete_via_btn")
     deleteEvent(eventId, {
       onSuccess: async (result) => {
         await queryClient.invalidateQueries({

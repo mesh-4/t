@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
+import { usePostHog } from "posthog-js/react"
 
 import { Button } from "@/components/ui/button"
 
@@ -11,12 +12,29 @@ type CommonHeaderEntryProps = {
 
 const CommonHeaderEntry = ({ isAuth = false }: CommonHeaderEntryProps) => {
   const router = useRouter()
+  const posthog = usePostHog()
 
   if (isAuth) {
-    return <Button onClick={() => router.push("/app")}>Dashboard</Button>
+    return (
+      <Button
+        onClick={() => {
+          posthog.capture("home-header_dashboard")
+          router.push("/app")
+        }}>
+        Dashboard
+      </Button>
+    )
   }
 
-  return <Button onClick={() => router.push("/login")}>Join</Button>
+  return (
+    <Button
+      onClick={() => {
+        posthog.capture("home-header_login")
+        router.push("/login")
+      }}>
+      Join
+    </Button>
+  )
 }
 
 export default CommonHeaderEntry

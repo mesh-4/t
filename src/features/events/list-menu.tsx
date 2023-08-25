@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { usePostHog } from "posthog-js/react"
 import { useQueryClient } from "@tanstack/react-query"
 import { useRouter, usePathname } from "next/navigation"
 
@@ -21,6 +22,7 @@ type EventsListMenuProps = {
 
 function EventsListMenu({ children }: EventsListMenuProps) {
   const router = useRouter()
+  const posthog = usePostHog()
   const pathname = usePathname()
   const queryClient = useQueryClient()
   const { mutate: createEvent } = useCreateEvent()
@@ -34,6 +36,7 @@ function EventsListMenu({ children }: EventsListMenuProps) {
   }, [pathname])
 
   const handleCreateEvent = () => {
+    posthog.capture("event-create_via_ctx_menu")
     createEvent(
       { title: "New Event", note: EDITOR_EMPTY_VALUE },
       {
@@ -49,6 +52,7 @@ function EventsListMenu({ children }: EventsListMenuProps) {
 
   const handleCreateSubEvent = () => {
     if (!currentEventId) return
+    posthog.capture("sub_event-create_via_menu")
     createEvent(
       { title: "New Sub Event", note: EDITOR_EMPTY_VALUE, parentId: currentEventId },
       {
@@ -64,6 +68,7 @@ function EventsListMenu({ children }: EventsListMenuProps) {
 
   const handleDeleteEvent = () => {
     if (!currentEventId) return
+    posthog.capture("event-delete_via_menu")
     deleteEvent(currentEventId, {
       onSuccess: async () => {
         await queryClient.invalidateQueries({

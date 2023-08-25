@@ -2,11 +2,13 @@
 
 import * as React from "react"
 import { signIn } from "next-auth/react"
+import { usePostHog } from "posthog-js/react"
 import { useSearchParams } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 
 function SignInForm() {
+  const posthog = usePostHog()
   const searchParams = useSearchParams()
   const next = searchParams?.get("next")
   const [clicked, setClicked] = React.useState(false)
@@ -18,9 +20,8 @@ function SignInForm() {
 
   const onClick = () => {
     setClicked(true)
-    signIn("github", {
-      callbackUrl: next && next.length > 0 ? next : "/app",
-    })
+    posthog.capture("auth_form-github_signin")
+    signIn("github", { callbackUrl: next && next.length > 0 ? next : "/app" })
   }
 
   return (

@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
+import { usePostHog } from "posthog-js/react"
 import { Pencil2Icon } from "@radix-ui/react-icons"
 import { useQueryClient } from "@tanstack/react-query"
 
@@ -11,10 +12,12 @@ import { useCreateEvent } from "@/hooks/events/mutations"
 
 function EventCreatorButton() {
   const router = useRouter()
+  const posthog = usePostHog()
   const queryClient = useQueryClient()
   const { mutate: createEvent, status } = useCreateEvent()
 
   const onClick = () => {
+    posthog.capture("event-create_via_btn")
     createEvent(
       {
         title: "New Event",

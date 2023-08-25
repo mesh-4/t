@@ -1,5 +1,6 @@
 import * as React from "react"
 import { format } from "date-fns"
+import { usePostHog } from "posthog-js/react"
 import { useHotkeys } from "react-hotkeys-hook"
 import { useQueryClient } from "@tanstack/react-query"
 import { usePathname, useRouter } from "next/navigation"
@@ -11,6 +12,7 @@ import type { Event } from "@/api/event"
 
 function EventsListRow({ index, style, data }: ListChildComponentProps<Event[]>) {
   const router = useRouter()
+  const posthog = usePostHog()
   const pathname = usePathname()
   const queryClient = useQueryClient()
   const { mutate: deleteEvent } = useDeleteEvent()
@@ -21,6 +23,7 @@ function EventsListRow({ index, style, data }: ListChildComponentProps<Event[]>)
   useHotkeys(
     "mod+backspace",
     () => {
+      posthog.capture("event-delete_via_hotkey")
       deleteEvent(item.id, {
         onSuccess: async () => {
           await queryClient.invalidateQueries({

@@ -2,9 +2,10 @@
 
 import { signOut } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { usePostHog } from "posthog-js/react"
 
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import LangSelector from "@/locales/components/lang-selector"
 import ColorModeSelector from "@/features/settings/color-mode-selector"
 
@@ -14,8 +15,10 @@ type SettingDialogProps = {
 
 function SettingDialog({ children }: SettingDialogProps) {
   const router = useRouter()
+  const posthog = usePostHog()
 
   const onSignOut = () => {
+    posthog.capture("auth-signout")
     signOut().then(() => {
       router.push(`/`)
     })
@@ -41,6 +44,7 @@ function SettingDialog({ children }: SettingDialogProps) {
             <div className="w-[180px]">
               <LangSelector />
             </div>
+            <p className="text-sm text-muted-foreground">Did not implement fully yet</p>
           </div>
 
           <div className="ml-auto">
