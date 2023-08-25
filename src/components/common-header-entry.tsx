@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import { signIn } from "next-auth/react"
 
 import { Button } from "@/components/ui/button"
 
@@ -17,7 +16,7 @@ const CommonHeaderEntry = ({ isAuth = false }: CommonHeaderEntryProps) => {
     return <Button onClick={() => router.push("/app")}>Dashboard</Button>
   }
 
-  return <Button onClick={() => signIn("github")}>Join</Button>
+  return <Button onClick={() => router.push("/login")}>Join</Button>
 }
 
 export default CommonHeaderEntry
