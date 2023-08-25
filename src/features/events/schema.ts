@@ -14,8 +14,8 @@ export type ReadEventParamsType = z.infer<typeof ReadEventParams>
 export const CreateEventInput = z.object({
   title: z.string(),
   note: z.string().optional(),
-  start: z.string().optional(),
-  end: z.string().optional(),
+  start: z.string().datetime().optional(),
+  end: z.string().datetime().optional(),
 })
 
 export const CreateEventPayload = CreateEventInput.extend({

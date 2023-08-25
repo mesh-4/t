@@ -64,8 +64,8 @@ function EventsLayer({ className, children }: EventLayerProps) {
       createEvent(
         {
           title: "New Event",
-          start: prefixWith(date)(getClosetSlotByY(Math.min(startY, endY))),
-          end: prefixWith(date)(getClosetSlotByY(Math.max(startY, endY))),
+          start: new Date(prefixWith(date)(getClosetSlotByY(Math.min(startY, endY)))).toISOString(),
+          end: new Date(prefixWith(date)(getClosetSlotByY(Math.max(startY, endY)))).toISOString(),
         },
         {
           onSuccess: () => {
@@ -81,7 +81,7 @@ function EventsLayer({ className, children }: EventLayerProps) {
       updateEvent(
         {
           id: layerTarget,
-          end: prefixWith(date)(getClosetSlotByY(getPointer("end"))),
+          end: new Date(prefixWith(date)(getClosetSlotByY(getPointer("end")))).toISOString(),
         },
         {
           onSuccess: () => {

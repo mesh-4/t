@@ -61,8 +61,8 @@ const POST: NextApiHandler = async (req, res) => {
     data: {
       title: input.title,
       note: input.note,
-      start: input.start && new Date(input.start),
-      end: input.end && new Date(input.end),
+      start: input.start,
+      end: input.end,
       user: {
         connect: {
           id: user.id,
