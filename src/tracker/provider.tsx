@@ -23,6 +23,13 @@ export function PostHogPageview(): JSX.Element {
       if (searchParams && searchParams.toString()) {
         url = url + `?${searchParams.toString()}`
       }
+
+      console.log(pathname)
+
+      // if pathname is /app, only capture pageview in /app
+      if (pathname.startsWith("/app") && pathname !== "/app") {
+        return
+      }
       posthog.capture("$pageview", {
         $current_url: url,
       })
