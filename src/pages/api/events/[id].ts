@@ -1,5 +1,3 @@
-import isNil from "lodash/isNil"
-import omitBy from "lodash/omitBy"
 import createHttpError from "http-errors"
 import type { NextApiHandler } from "next"
 
@@ -40,15 +38,12 @@ const PUT: NextApiHandler = async (req, res) => {
   }
 
   const input = UpdateEventPayload.parse(req.body)
-  const formattedInput = omitBy(
-    {
-      title: input.title,
-      note: input.note,
-      start: input.start ? new Date(input.start) : undefined,
-      end: input.end ? new Date(input.end) : undefined,
-    },
-    isNil
-  )
+  const formattedInput = {
+    title: input.title,
+    note: input.note,
+    start: input.start,
+    end: input.end,
+  }
 
   const data = await prisma.event.update({
     where: {

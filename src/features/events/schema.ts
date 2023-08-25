@@ -27,8 +27,8 @@ export type CreateEventPayloadType = z.infer<typeof CreateEventPayload>
 export const UpdateEventPayload = z.object({
   title: z.string().optional(),
   note: z.string().optional(),
-  start: z.string().optional(),
-  end: z.string().optional(),
+  start: z.string().optional().nullable(),
+  end: z.string().optional().nullable(),
   parentId: z.string().optional(),
 })
 export type UpdateEventPayloadType = z.infer<typeof UpdateEventPayload>

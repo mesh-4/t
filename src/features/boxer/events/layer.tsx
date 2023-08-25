@@ -35,6 +35,7 @@ function EventsLayer({ className, children }: EventLayerProps) {
   const { mutate: updateEvent } = useUpdateEvent()
 
   const timelineRef = React.useRef<HTMLDivElement>(null)
+  const scrollMutateTimes = React.useRef(0)
 
   const getTimeline = useCallbackRef(() => {
     const offsetTop = timelineRef.current?.offsetTop ?? 0
@@ -154,7 +155,7 @@ function EventsLayer({ className, children }: EventLayerProps) {
   }, [])
 
   React.useEffect(() => {
-    if (isSameDay(new Date(date), new Date())) {
+    if (isSameDay(new Date(date), new Date()) && scrollMutateTimes.current === 0) {
       setTimeout(() => {
         if (timelineRef.current) {
           const target = getYByTime(Date.now())
@@ -163,6 +164,7 @@ function EventsLayer({ className, children }: EventLayerProps) {
 
           if (target > offsetHeight / 2 || target < scrollHeight - offsetHeight / 2) {
             timelineRef.current.scrollTop = getYByTime(Date.now()) - offsetHeight / 4
+            scrollMutateTimes.current += 1
           }
         }
       }, 100)
@@ -205,4 +207,4 @@ function EventsLayer({ className, children }: EventLayerProps) {
 
 EventsLayer.displayName = "EventsLayer"
 
-export default React.memo(EventsLayer)
+export default EventsLayer

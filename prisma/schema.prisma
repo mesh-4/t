@@ -66,10 +66,10 @@ model Event {
   end           DateTime?
 
   parentId      String?
-  parentEvent   Event?    @relation("ParentSubEvent", fields: [parentId], references: [id])
-  subEvents     Event[]   @relation("ParentSubEvent")
+  parentEvent   Event?      @relation("ParentSubEvent", fields: [parentId], references: [id])
+  subEvents     Event[]     @relation("ParentSubEvent")
 
-  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        String
 
   @@index([userId])
