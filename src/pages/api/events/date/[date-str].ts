@@ -1,6 +1,6 @@
 import { z } from "zod"
 import createHttpError from "http-errors"
-import { startOfDay, endOfDay } from "date-fns"
+import { startOfDay, addHours } from "date-fns"
 import type { NextApiHandler } from "next"
 
 import prisma from "@/libs/prisma"
@@ -9,6 +9,7 @@ import { getSessionUser } from "@/auth/get-session-user"
 
 const ReadEventByDateParams = z.object({
   "date-str": z.string(),
+  tz: z.string().optional(),
 })
 
 const GET: NextApiHandler = async (req, res) => {
@@ -17,15 +18,21 @@ const GET: NextApiHandler = async (req, res) => {
     throw new createHttpError.Unauthorized()
   }
 
-  const params = ReadEventByDateParams.parse(req.query) // should be in format YYYY-MM-DD
-  const date = new Date(params["date-str"])
+  const params = ReadEventByDateParams.parse(req.query)
+  const date = new Date(params["date-str"]) // date-str should be in format YYYY-MM-DD
+  const tz = params.tz // client timezone offset in hours. e.g: -7, 8.5, 0
+
+  let start = startOfDay(date) // UTC start time
+  if (tz) {
+    start = new Date(start.getTime() - parseInt(tz, 10) * 60 * 60 * 1000)
+  }
 
   const data = await prisma.event.findMany({
     where: {
       userId: user.id,
       start: {
-        gte: startOfDay(date),
-        lte: endOfDay(date),
+        gte: start,
+        lt: addHours(start, 24),
       },
     },
     orderBy: {

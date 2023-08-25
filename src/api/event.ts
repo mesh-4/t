@@ -1,5 +1,5 @@
 import { fetcher } from "@/libs/fetcher"
-
+import { getTimezoneOffsetHour } from "@/utils"
 import type { ReadEventParamsType, CreateEventPayloadType, UpdateEventPayloadType } from "@/features/events/schema"
 
 export type Event = {
@@ -58,7 +58,7 @@ export type DateEventsResponse = {
   data: (Event & DateRange)[]
 }
 
-export const getEventsByDate = async (date: string) => {
-  const res = await fetcher.get<DateEventsResponse>(`/events/date/${date}`)
+export const getEventsByDate = async (date: string, tz = getTimezoneOffsetHour()) => {
+  const res = await fetcher.get<DateEventsResponse>(`/events/date/${date}?tz=${tz}`)
   return res.data
 }
